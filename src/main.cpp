@@ -1,11 +1,7 @@
 #include <QApplication>
 #include <QPushButton>
 
-
-
-void make_gui(QWidget *window) {
-    // QLabel hex_label = 
-}
+#include "NumRepWindow.h"
 
 
 
@@ -15,7 +11,8 @@ int main(int argc, char **argv) {
     QWidget window;
     window.resize(320, 420);
 
-    make_gui(&window);
+    auto *window_maker = new NumRepWindow();
+    window_maker->build_gui(&window);
 
     window.show();
     return app.exec();

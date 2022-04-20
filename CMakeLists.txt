@@ -11,16 +11,16 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-
-# set(CMAKE_PREFIX_PATH "C:\\Qt\\6.2.4\\mingw_64\\bin")
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
-
 # add_subdirectory(src)
 
 
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
+
+
 add_executable(NumRep
-    src/main.cpp
+        src/main.cpp
+        src/NumRepWindow.h
+        src/NumRepWindow.cpp
 )
 
-target_link_libraries(NumRep PRIVATE Qt6::Widgets)
-
+target_link_libraries(NumRep PRIVATE Qt5::Widgets)
