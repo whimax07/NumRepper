@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     window.resize(320, 420);
 
     auto *window_maker = new NumRepWindow();
-    window_maker->build_gui(&window);
+    window_maker->buildGui(&window);
 
     window.show();
     return app.exec();

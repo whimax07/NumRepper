@@ -21,6 +21,6 @@ add_executable(NumRep
         src/main.cpp
         src/NumRepWindow.h
         src/NumRepWindow.cpp
-)
+        src/ClickableLabel.cpp src/ClickableLabel.h src/BinaryEditor.cpp src/BinaryEditor.h)
 
 target_link_libraries(NumRep PRIVATE Qt5::Widgets)

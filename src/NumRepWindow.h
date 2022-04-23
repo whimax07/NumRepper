@@ -5,27 +5,33 @@
 #include <QLabel>
 #include <QFormLayout>
 #include <QLineEdit>
+#include <QPushButton>
 
 class NumRepWindow : public QWidget {
 
 private:
-    QWidget *_window;
+    QWidget *mainPanel;
 
-    QLabel *_test_label;
+    QLineEdit *decEdit;
 
-    QLineEdit *_test_edit;
+    QLineEdit *hexEdit;
+
+    QLineEdit *binEdit;
+
+    QLineEdit *floatEdit;
 
 
 
 public:
-    explicit NumRepWindow() : _window{nullptr}, _test_label{nullptr},
-    _test_edit{nullptr} { }
+    explicit NumRepWindow() : mainPanel{nullptr}, decEdit{nullptr},
+                              hexEdit{nullptr}, binEdit{nullptr},
+                              floatEdit{nullptr} { }
 
     ~NumRepWindow() override {
-        delete _window;
+        delete mainPanel;
     }
 
-    void build_gui(QWidget *window);
+    void buildGui(QWidget *main_panel);
 
 };
 
