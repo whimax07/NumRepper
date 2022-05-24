@@ -9,7 +9,6 @@
 #include <QLabel>
 
 
-
 class ClickableLabel : public QLabel {
 Q_OBJECT
 

@@ -8,11 +8,11 @@
 #define NUMREPRESENTATION_DECEDITOR_H
 
 
-#include <QLineEdit>
 #include <iostream>
 
-#include "../data_modle/DataModel.h"
+#include <QLineEdit>
 
+#include "../data_modle/DataModel.h"
 
 
 class DecEditor : public QLineEdit {
@@ -67,7 +67,7 @@ private slots:
             return;
         }
 
-        updateModel(*(uint64_t *) &newInt);
+        emit updateModel(*(uint64_t *) &newInt);
     };
 
 

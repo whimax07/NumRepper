@@ -5,7 +5,9 @@
 #ifndef NUMREPRESENTATION_BINARYEDITOR_H
 #define NUMREPRESENTATION_BINARYEDITOR_H
 
+
 #include <QWidget>
+
 
 class BinaryEditor : public QWidget {
 Q_OBJECT

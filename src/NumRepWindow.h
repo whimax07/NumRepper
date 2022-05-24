@@ -2,14 +2,10 @@
 #define SOME_UNIQUE_NAME_HERE
 
 #include <QWidget>
-#include <QLabel>
 #include <QFormLayout>
-#include <QLineEdit>
-#include <QPushButton>
 
 #include "data_modle/DataModel.h"
 #include "edit_fields/DecEditor.h"
-
 
 
 class NumRepWindow : public QWidget {
@@ -36,5 +32,6 @@ public:
     void buildGui(QWidget *main_panel);
 
 };
+
 
 #endif

@@ -7,8 +7,10 @@
 
 
 #include <cstdint>
-#include <QtCore>
 #include <iostream>
+
+#include <QtCore>
+
 
 class DataModel : public QObject {
 Q_OBJECT

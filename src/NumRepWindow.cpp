@@ -3,7 +3,6 @@
 #include "ClickableLabel.h"
 
 
-
 void NumRepWindow::buildGui(QWidget *main_panel) {
     this->mainPanel = main_panel;
     auto edit_panel = new QWidget(this->mainPanel);
