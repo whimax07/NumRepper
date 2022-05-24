@@ -18,11 +18,8 @@
 class DecEditor : public QLineEdit {
 Q_OBJECT
 
-
-
 private:
     DataModel *_dataModel;
-
 
 
 public:
@@ -32,13 +29,7 @@ public:
                 this, &DecEditor::textEdited,
                 this, &DecEditor::decTextChanged
         );
-
-        connect(
-                this, &DecEditor::updateModel,
-                _dataModel, &DataModel::setModelData
-        );
     }
-
 
 
 private slots:
@@ -67,9 +58,8 @@ private slots:
             return;
         }
 
-        emit updateModel(*(uint64_t *) &newInt);
+        _dataModel->setModelData(*(uint64_t *) &newInt);
     };
-
 
 
 signals:

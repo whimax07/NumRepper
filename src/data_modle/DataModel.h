@@ -15,19 +15,13 @@
 class DataModel : public QObject {
 Q_OBJECT
 
-
-
 private:
     uint64_t _dataField;
-
 
 
 public:
     DataModel() : _dataField{0} {};
 
-
-
-public slots:
     void setModelData(uint64_t data) {
         _dataField = data;
         std::cout << "New _dataField value is: " << data <<std::endl;

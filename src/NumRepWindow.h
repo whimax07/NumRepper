@@ -18,7 +18,6 @@ private:
     DecEditor *decEdit;
 
 
-
 public:
     explicit NumRepWindow() : mainPanel{nullptr}, decEdit{nullptr} {
         _dataModel = new DataModel();

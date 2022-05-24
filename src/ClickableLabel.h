@@ -2,6 +2,8 @@
 // Created by max on 23/04/22.
 //
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NotImplementedFunctions"
 #ifndef NUMREPRESENTATION_CLICKABLELABEL_H
 #define NUMREPRESENTATION_CLICKABLELABEL_H
 
@@ -12,11 +14,8 @@
 class ClickableLabel : public QLabel {
 Q_OBJECT
 
-
-
 private:
     int labelNumber;
-
 
 
 public:
@@ -26,10 +25,8 @@ public:
     ~ClickableLabel() override;
 
 
-
 signals:
     void clicked(int buttonNumber, bool high);
-
 
 
 protected:
@@ -39,3 +36,5 @@ protected:
 
 
 #endif //NUMREPRESENTATION_CLICKABLELABEL_H
+
+#pragma clang diagnostic pop
