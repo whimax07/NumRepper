@@ -2,6 +2,8 @@
 // Created by max on 24/05/22.
 //
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NotImplementedFunctions"
 #ifndef NUMREPRESENTATION_DATAMODEL_H
 #define NUMREPRESENTATION_DATAMODEL_H
 
@@ -10,6 +12,8 @@
 #include <iostream>
 
 #include <QtCore>
+
+#include "../edit_fields/FieldTypes.h"
 
 
 class DataModel : public QObject {
@@ -22,12 +26,19 @@ private:
 public:
     DataModel() : _dataField{0} {};
 
-    void setModelData(uint64_t data) {
+    void setModelData(uint64_t data, FieldTypes source) {
         _dataField = data;
         std::cout << "New _dataField value is: " << data <<std::endl;
+        emit dataUpdated(data, source);
     }
+
+
+signals:
+    void dataUpdated(uint64_t data, FieldTypes source);
 
 };
 
 
 #endif //NUMREPRESENTATION_DATAMODEL_H
+
+#pragma clang diagnostic pop

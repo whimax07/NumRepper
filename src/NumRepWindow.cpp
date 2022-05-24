@@ -7,10 +7,12 @@ void NumRepWindow::buildGui(QWidget *main_panel) {
     this->mainPanel = main_panel;
     auto edit_panel = new QWidget(this->mainPanel);
 
-    this->decEdit = new DecEditor(this->mainPanel, _dataModel);
+    decEdit = new DecEditor(this->mainPanel, _dataModel);
+    hexEdit = new HexEditor(this->mainPanel, _dataModel);
 
     auto layout = new QFormLayout(edit_panel);
     layout->addRow("Decimal", this->decEdit);
+    layout->addRow("Hexadecimal", this->hexEdit);
 }
 
 //void NumRepWindow::buildGui(QWidget *main_panel) {

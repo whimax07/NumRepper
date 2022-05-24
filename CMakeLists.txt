@@ -22,6 +22,6 @@ add_executable(NumRep
         src/NumRepWindow.cpp
         src/ClickableLabel.cpp
         src/BinaryEditor.cpp
-        src/edit_fields/DecEditor.cpp src/edit_fields/DecEditor.h src/data_modle/DataModel.cpp src/data_modle/DataModel.h)
+        src/edit_fields/DecEditor.cpp src/edit_fields/DecEditor.h src/data_modle/DataModel.cpp src/data_modle/DataModel.h src/edit_fields/HexEditor.cpp src/edit_fields/HexEditor.h src/edit_fields/FieldTypes.h)
 
 target_link_libraries(NumRep PRIVATE Qt5::Widgets)

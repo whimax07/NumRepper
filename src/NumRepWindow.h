@@ -6,6 +6,7 @@
 
 #include "data_modle/DataModel.h"
 #include "edit_fields/DecEditor.h"
+#include "edit_fields/HexEditor.h"
 
 
 class NumRepWindow : public QWidget {
@@ -17,9 +18,12 @@ private:
 
     DecEditor *decEdit;
 
+    HexEditor *hexEdit;
+
 
 public:
-    explicit NumRepWindow() : mainPanel{nullptr}, decEdit{nullptr} {
+    explicit NumRepWindow() : mainPanel{nullptr}, decEdit{nullptr},
+                              hexEdit{nullptr} {
         _dataModel = new DataModel();
     }
 
