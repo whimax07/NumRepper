@@ -7,28 +7,30 @@
 #include <QLineEdit>
 #include <QPushButton>
 
+#include "data_modle/DataModel.h"
+#include "edit_fields/DecEditor.h"
+
+
+
 class NumRepWindow : public QWidget {
 
 private:
+    DataModel *_dataModel;
+
     QWidget *mainPanel;
 
-    QLineEdit *decEdit;
-
-    QLineEdit *hexEdit;
-
-    QLineEdit *binEdit;
-
-    QLineEdit *floatEdit;
+    DecEditor *decEdit;
 
 
 
 public:
-    explicit NumRepWindow() : mainPanel{nullptr}, decEdit{nullptr},
-                              hexEdit{nullptr}, binEdit{nullptr},
-                              floatEdit{nullptr} { }
+    explicit NumRepWindow() : mainPanel{nullptr}, decEdit{nullptr} {
+        _dataModel = new DataModel();
+    }
 
     ~NumRepWindow() override {
         delete mainPanel;
+        delete _dataModel;
     }
 
     void buildGui(QWidget *main_panel);

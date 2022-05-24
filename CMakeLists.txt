@@ -5,7 +5,7 @@ project(
     DESCRIPTION "A QT Gui."
 )
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -19,12 +19,9 @@ find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
 add_executable(NumRep
         src/main.cpp
-        src/NumRepWindow.h
         src/NumRepWindow.cpp
         src/ClickableLabel.cpp
-        src/ClickableLabel.h
         src/BinaryEditor.cpp
-        src/BinaryEditor.h
-        )
+        src/edit_fields/DecEditor.cpp src/edit_fields/DecEditor.h src/data_modle/DataModel.cpp src/data_modle/DataModel.h)
 
 target_link_libraries(NumRep PRIVATE Qt5::Widgets)
