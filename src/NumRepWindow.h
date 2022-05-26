@@ -7,6 +7,7 @@
 #include "data_modle/DataModel.h"
 #include "edit_fields/DecEditor.h"
 #include "edit_fields/HexEditor.h"
+#include "edit_fields/FloatEdit.h"
 
 
 class NumRepWindow : public QWidget {
@@ -14,21 +15,23 @@ class NumRepWindow : public QWidget {
 private:
     DataModel *_dataModel;
 
-    QWidget *mainPanel;
+    QWidget *_mainPanel;
 
-    DecEditor *decEdit;
+    DecEditor *_decEdit;
 
-    HexEditor *hexEdit;
+    HexEditor *_hexEdit;
+
+    FloatEdit *_floatEdit;
 
 
 public:
-    explicit NumRepWindow() : mainPanel{nullptr}, decEdit{nullptr},
-                              hexEdit{nullptr} {
+    explicit NumRepWindow() : _mainPanel{nullptr}, _decEdit{nullptr},
+                              _hexEdit{nullptr}, _floatEdit{nullptr} {
         _dataModel = new DataModel();
     }
 
     ~NumRepWindow() override {
-        delete mainPanel;
+        delete _mainPanel;
         delete _dataModel;
     }
 

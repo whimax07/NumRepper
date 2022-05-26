@@ -4,37 +4,39 @@
 
 
 void NumRepWindow::buildGui(QWidget *main_panel) {
-    this->mainPanel = main_panel;
-    auto edit_panel = new QWidget(this->mainPanel);
+    this->_mainPanel = main_panel;
+    auto edit_panel = new QWidget(_mainPanel);
 
-    decEdit = new DecEditor(this->mainPanel, _dataModel);
-    hexEdit = new HexEditor(this->mainPanel, _dataModel);
+    _decEdit = new DecEditor(_mainPanel, _dataModel);
+    _hexEdit = new HexEditor(_mainPanel, _dataModel);
+    _floatEdit = new FloatEdit(_mainPanel, _dataModel);
 
     auto layout = new QFormLayout(edit_panel);
-    layout->addRow("Decimal", this->decEdit);
-    layout->addRow("Hexadecimal", this->hexEdit);
+    layout->addRow("Decimal", _decEdit);
+    layout->addRow("Hexadecimal", _hexEdit);
+    layout->addRow("Signal Precision", _floatEdit);
 }
 
 //void NumRepWindow::buildGui(QWidget *main_panel) {
-//    this->mainPanel = main_panel;
-//    auto box_layout = new QVBoxLayout(this->mainPanel);
-//    auto edit_panel = new QWidget(this->mainPanel);
+//    this->_mainPanel = main_panel;
+//    auto box_layout = new QVBoxLayout(this->_mainPanel);
+//    auto edit_panel = new QWidget(this->_mainPanel);
 //
 //
-//    this->decEdit = new QLineEdit(this->mainPanel);
-//    this->hexEdit = new QLineEdit(this->mainPanel);
-//    this->binEdit = new QLineEdit(this->mainPanel);
-//    this->floatEdit = new QLineEdit(this->mainPanel);
+//    this->_decEdit = new QLineEdit(this->_mainPanel);
+//    this->_hexEdit = new QLineEdit(this->_mainPanel);
+//    this->binEdit = new QLineEdit(this->_mainPanel);
+//    this->_floatEdit = new QLineEdit(this->_mainPanel);
 //
 //    auto layout = new QFormLayout(edit_panel);
-//    layout->addRow("Decimal", this->decEdit);
-//    layout->addRow("Hexadecimal", this->hexEdit);
+//    layout->addRow("Decimal", this->_decEdit);
+//    layout->addRow("Hexadecimal", this->_hexEdit);
 //    layout->addRow("Binary", this->binEdit);
-//    layout->addRow("Floating Point", this->floatEdit);
+//    layout->addRow("Floating Point", this->_floatEdit);
 //
 //    auto binaryEditor = new BinaryEditor();
 //
-//    auto binaryEditPanel = new QWidget(this->mainPanel);
+//    auto binaryEditPanel = new QWidget(this->_mainPanel);
 //    auto binButtonLayout = new QHBoxLayout(binaryEditPanel);
 //    for (int i = 0; i < 10; i++) {
 //        auto clickableButton = new ClickableLabel(binaryEditPanel, i);

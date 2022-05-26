@@ -67,7 +67,7 @@ private slots:
                 *(uint64_t *) &newInt,
                 FieldTypes::DEC
         );
-    };
+    }
 
     void numberUpdated(uint64_t data, FieldTypes source) {
         if (source == FieldTypes::DEC) {
