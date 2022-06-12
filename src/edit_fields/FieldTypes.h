@@ -7,6 +7,7 @@
 
 
 enum struct FieldTypes {
+    NONE,
     DEC,
     HEX,
     FLOAT,

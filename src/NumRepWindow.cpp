@@ -7,15 +7,16 @@ void NumRepWindow::buildGui(QWidget *main_panel) {
     this->_mainPanel = main_panel;
     auto edit_panel = new QWidget(_mainPanel);
 
-    _decEdit = new DecEditor(_mainPanel, _dataModel);
-    _hexEdit = new HexEditor(_mainPanel, _dataModel);
-    _floatEdit = new FloatEdit(_mainPanel, _dataModel);
+    _decEdit = EditFields::makeDecEditor(_mainPanel, _dataModel);
+    _hexEdit = EditFields::makeHexEditor(_mainPanel, _dataModel);
+    _floatEdit = EditFields::makeFloatEditor(_mainPanel, _dataModel);
 
     auto layout = new QFormLayout(edit_panel);
     layout->addRow("Decimal", _decEdit);
     layout->addRow("Hexadecimal", _hexEdit);
     layout->addRow("Signal Precision", _floatEdit);
 }
+
 
 //void NumRepWindow::buildGui(QWidget *main_panel) {
 //    this->_mainPanel = main_panel;

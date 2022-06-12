@@ -5,9 +5,8 @@
 #include <QFormLayout>
 
 #include "data_modle/DataModel.h"
-#include "edit_fields/DecEditor.h"
-#include "edit_fields/HexEditor.h"
-#include "edit_fields/FloatEdit.h"
+#include "edit_fields/EditFields.h"
+#include "edit_fields/GenericEditField.h"
 
 
 class NumRepWindow : public QWidget {
@@ -17,11 +16,11 @@ private:
 
     QWidget *_mainPanel;
 
-    DecEditor *_decEdit;
+    GenericEditField *_decEdit;
 
-    HexEditor *_hexEdit;
+    GenericEditField *_hexEdit;
 
-    FloatEdit *_floatEdit;
+    GenericEditField *_floatEdit;
 
 
 public:

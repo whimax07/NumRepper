@@ -20,21 +20,48 @@ class DataModel : public QObject {
 Q_OBJECT
 
 private:
-    uint64_t _dataField;
+    uint64_t dataField_;
+
+    FieldTypes updatingField_;
+
+    bool successfulUpdate_;
 
 
 public:
-    DataModel() : _dataField{0} {};
+    DataModel() : dataField_{0},
+                  updatingField_(FieldTypes::NONE),
+                  successfulUpdate_{false} {};
 
     void setModelData(uint64_t data, FieldTypes source) {
-        _dataField = data;
-        std::cout << "New _dataField value is: " << data <<std::endl;
-        emit dataUpdated(data, source);
+        dataField_ = data;
+        updatingField_ = source;
+        std::cout << "New dataField_ value is: " << data << std::endl;
+    }
+
+    uint64_t getModelData() {
+        return dataField_;
+    }
+
+    FieldTypes getUpdatingFieldType() {
+        return updatingField_;
+    }
+
+    void setUpdateSuccessfully(bool success) {
+        if (success || successfulUpdate_ != success) {
+            successfulUpdate_ = success;
+            emit generalDataUpdated();
+        } else {
+            successfulUpdate_ = success;
+        }
+    }
+
+    bool isUpdateSuccessful() {
+        return successfulUpdate_;
     }
 
 
 signals:
-    void dataUpdated(uint64_t data, FieldTypes source);
+    void generalDataUpdated();
 
 };
 
