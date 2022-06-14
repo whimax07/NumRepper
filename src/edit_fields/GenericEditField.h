@@ -11,6 +11,7 @@
 #include "../data_modle/DataModel.h"
 
 
+
 using TextChangedFunction = void (*)(
         const QString &text,
         DataModel *dataModel
@@ -20,6 +21,7 @@ using DataChangedFunction = void (*)(
         QLineEdit *editField,
         DataModel *dataModel
 );
+
 
 
 class GenericEditField : public QLineEdit {

@@ -4,9 +4,11 @@
 #include <QWidget>
 #include <QFormLayout>
 
+#include "binary_rep/BitButtons.h"
 #include "data_modle/DataModel.h"
 #include "edit_fields/EditFields.h"
 #include "edit_fields/GenericEditField.h"
+
 
 
 class NumRepWindow : public QWidget {
@@ -26,11 +28,14 @@ private:
 
     GenericEditField *_doubleEdit;
 
+    BitButtons *_bitButtons;
+
 
 public:
     explicit NumRepWindow() : _mainPanel{nullptr}, _decEdit{nullptr},
                               _hexEdit{nullptr}, _binEdit{nullptr},
-                              _floatEdit{nullptr}, _doubleEdit{nullptr} {
+                              _floatEdit{nullptr}, _doubleEdit{nullptr},
+                              _bitButtons{nullptr} {
         _dataModel = new DataModel();
     }
 
