@@ -6,11 +6,12 @@
 #define NUMREPRESENTATION_FIELDTYPES_H
 
 
-enum struct FieldTypes {
+enum class FieldTypes {
     NONE,
     DEC,
     HEX,
     FLOAT,
+    DOUBLE,
     BIN,
     BIN_EXPAND
 };

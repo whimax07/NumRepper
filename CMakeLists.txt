@@ -22,6 +22,6 @@ add_executable(NumRep
         src/NumRepWindow.cpp
         src/ClickableLabel.cpp
         src/BinaryEditor.cpp
-        src/data_modle/DataModel.h src/edit_fields/FieldTypes.h src/edit_fields/GenericEditField.h src/edit_fields/GenericEditField.cpp src/edit_fields/EditFields.cpp src/edit_fields/EditFields.h)
+        src/data_modle/DataModel.h src/edit_fields/FieldTypes.h src/edit_fields/GenericEditField.h src/edit_fields/GenericEditField.cpp src/edit_fields/EditFields.cpp src/edit_fields/EditFields.h src/binary_rep/BinaryButton.h)
 
 target_link_libraries(NumRep PRIVATE Qt5::Widgets)
