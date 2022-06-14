@@ -20,6 +20,8 @@ private:
 
     GenericEditField *_hexEdit;
 
+    GenericEditField *_binEdit;
+
     GenericEditField *_floatEdit;
 
     GenericEditField *_doubleEdit;
@@ -27,8 +29,8 @@ private:
 
 public:
     explicit NumRepWindow() : _mainPanel{nullptr}, _decEdit{nullptr},
-                              _hexEdit{nullptr}, _floatEdit{nullptr},
-                              _doubleEdit{nullptr} {
+                              _hexEdit{nullptr}, _binEdit{nullptr},
+                              _floatEdit{nullptr}, _doubleEdit{nullptr} {
         _dataModel = new DataModel();
     }
 

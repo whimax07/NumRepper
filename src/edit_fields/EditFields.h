@@ -22,6 +22,11 @@ public:
             DataModel *dataModel
     );
 
+    static GenericEditField * makeBinEditor(
+            QWidget *parent,
+            DataModel *dataModel
+    );
+
     static GenericEditField * makeFloatEditor(
             QWidget *parent,
             DataModel *dataModel

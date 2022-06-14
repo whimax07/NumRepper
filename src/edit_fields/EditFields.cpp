@@ -171,6 +171,78 @@ EditFields::makeHexEditor(
 
 
 // =============================================================================
+// ===== Bin ===================================================================
+
+void
+binTextChanged(
+        const QString &text,
+        DataModel *dataModel
+) {
+    const auto textStd = text.toStdString();
+    std::size_t pos = 0;
+
+    std::cout << "Bin string changed: " << text.toStdString() << std::endl;
+    uint64_t newInt;
+
+    try {
+        newInt = std::stoi(textStd, &pos, 2);
+    }
+    catch(std::invalid_argument const& ex) {
+        INVALID_ARGUMENT_ERROR;
+    }
+    catch(std::out_of_range const& ex) {
+        OUT_OF_RANGE_ERROR;
+    }
+
+    if (pos != textStd.length()) {
+        dataModel->setUpdateSuccessfully(false);
+        return;
+    }
+
+    dataModel->setModelData(
+            *(uint64_t *) &newInt,
+            FieldTypes::BIN
+    );
+    dataModel->setUpdateSuccessfully(true);
+}
+
+
+void
+dataChangedBin(
+        QLineEdit *editField,
+        DataModel *dataModel
+) {
+    if (dataModel->getUpdatingFieldType() == FieldTypes::BIN) {
+        return;
+    }
+
+    if (!dataModel->isUpdateSuccessful()) {
+        editField->setText("Invalid");
+        return;
+    }
+
+    uint64_t data = dataModel->getModelData();
+    uint32_t newData = *(uint32_t *) &data;
+
+    editField->setText("0b" + QString::number(newData, 2));
+}
+
+
+GenericEditField *
+EditFields::makeBinEditor(
+        QWidget *parent,
+        DataModel *dataModel
+) {
+    auto editField = new GenericEditField(parent, dataModel);
+
+    editField->setTextChangedFunction(&binTextChanged);
+    editField->setDataChangedFunction(&dataChangedBin);
+
+    return editField;
+}
+
+
+// =============================================================================
 // ===== Float =================================================================
 
 void

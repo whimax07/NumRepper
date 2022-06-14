@@ -10,9 +10,9 @@ enum class FieldTypes {
     NONE,
     DEC,
     HEX,
+    BIN,
     FLOAT,
     DOUBLE,
-    BIN,
     BIN_EXPAND
 };
 
