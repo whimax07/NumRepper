@@ -34,10 +34,10 @@ decTextChanged(
     std::size_t pos = 0;
 
     std::cout << "Dec string changed: " << text.toStdString() << std::endl;
-    uint64_t newInt;
+    Number data;
 
     try {
-        newInt = std::stoi(textStd, &pos, 10);
+        data.i32 = std::stoi(textStd, &pos, 10);
     }
     catch(std::invalid_argument const& ex) {
         INVALID_ARGUMENT_ERROR;
@@ -51,10 +51,8 @@ decTextChanged(
         return;
     }
 
-    dataModel->setModelData(
-            *(uint64_t *) &newInt,
-            FieldTypes::DEC
-    );
+
+    dataModel->setData(data, FieldTypes::DEC);
     dataModel->setUpdateSuccessfully(true);
 }
 
@@ -73,9 +71,8 @@ dataChangedDec(
         return;
     }
 
-    uint64_t data = dataModel->getModelData();
-    int newData = *(int *) &data;
-    editField->setText(QString::number(newData, 10));
+    Number newNumber = dataModel->getData();
+    editField->setText(QString::number(newNumber.i32, 10));
 }
 
 
@@ -105,10 +102,10 @@ hexTextChanged(
     std::size_t pos = 0;
 
     std::cout << "Hex string changed: " << text.toStdString() << std::endl;
-    uint64_t newInt;
+    Number newInt;
 
     try {
-        newInt = std::stoi(textStd, &pos, 16);
+        newInt.i32 = std::stoi(textStd, &pos, 16);
     }
     catch(std::invalid_argument const& ex) {
         INVALID_ARGUMENT_ERROR;
@@ -122,10 +119,7 @@ hexTextChanged(
         return;
     }
 
-    dataModel->setModelData(
-            *(uint64_t *) &newInt,
-            FieldTypes::HEX
-    );
+    dataModel->setData(newInt,FieldTypes::HEX);
     dataModel->setUpdateSuccessfully(true);
 }
 
@@ -144,15 +138,14 @@ dataChangedHex(
         return;
     }
 
-    uint64_t data = dataModel->getModelData();
-    int newData = *(int *) &data;
+    Number newNumber = dataModel->getData();
     QString sign = "";
 
-    if (newData < 0) {
+    if (newNumber.i32 < 0) {
         sign = "-";
     }
 
-    editField->setText(sign + "0x" + QString::number(abs(newData), 16));
+    editField->setText(sign + "0x" + QString::number(abs(newNumber.i32), 16));
 }
 
 
@@ -182,10 +175,10 @@ binTextChanged(
     std::size_t pos = 0;
 
     std::cout << "Bin string changed: " << text.toStdString() << std::endl;
-    uint64_t newInt;
+    Number newInt;
 
     try {
-        newInt = std::stoi(textStd, &pos, 2);
+        newInt.i32 = std::stoi(textStd, &pos, 2);
     }
     catch(std::invalid_argument const& ex) {
         INVALID_ARGUMENT_ERROR;
@@ -199,10 +192,7 @@ binTextChanged(
         return;
     }
 
-    dataModel->setModelData(
-            *(uint64_t *) &newInt,
-            FieldTypes::BIN
-    );
+    dataModel->setData(newInt, FieldTypes::BIN);
     dataModel->setUpdateSuccessfully(true);
 }
 
@@ -221,10 +211,8 @@ dataChangedBin(
         return;
     }
 
-    uint64_t data = dataModel->getModelData();
-    uint32_t newData = *(uint32_t *) &data;
-
-    editField->setText("0b" + QString::number(newData, 2));
+    Number data = dataModel->getData();
+    editField->setText("0b" + QString::number(data.i32, 2));
 }
 
 
@@ -257,10 +245,10 @@ floatTextChanged(
               << text.toStdString()
               << std::endl;
 
-    float newFloat;
+    Number newFloat;
 
     try {
-        newFloat = std::stof(textStd, &pos);
+        newFloat.f32 = std::stof(textStd, &pos);
     }
     catch(std::invalid_argument const& ex) {
         INVALID_ARGUMENT_ERROR;
@@ -274,10 +262,7 @@ floatTextChanged(
         return;
     }
 
-    dataModel->setModelData(
-            (uint64_t) *(uint32_t *) &newFloat,
-            FieldTypes::FLOAT
-    );
+    dataModel->setData(newFloat, FieldTypes::FLOAT);
     dataModel->setUpdateSuccessfully(true);
 }
 
@@ -296,13 +281,8 @@ dataChangedFloat(
         return;
     }
 
-    uint64_t data = dataModel->getModelData();
-    float newData = *(float *) &data;
-
-    std::ostringstream ss;
-    ss << newData;
-    std::string s = ss.str();
-    editField->setText(QString::number(newData));
+    Number data = dataModel->getData();
+    editField->setText(QString::number(data.f32));
 }
 
 
@@ -315,85 +295,6 @@ EditFields::makeFloatEditor(
 
     editField->setTextChangedFunction(&floatTextChanged);
     editField->setDataChangedFunction(&dataChangedFloat);
-
-    return editField;
-}
-
-
-// =============================================================================
-// ===== Double ================================================================
-
-void
-doubleTextChanged(
-        const QString &text,
-        DataModel *dataModel
-) {
-    const auto textStd = text.toStdString();
-    std::size_t pos = 0;
-
-    std::cout << "Double string changed: "
-              << text.toStdString()
-              << std::endl;
-
-    double newDouble;
-
-    try {
-        newDouble = std::stod(textStd, &pos);
-    }
-    catch(std::invalid_argument const& ex) {
-        INVALID_ARGUMENT_ERROR;
-    }
-    catch(std::out_of_range const& ex) {
-        OUT_OF_RANGE_ERROR;
-    }
-
-    if (pos != textStd.length()) {
-        dataModel->setUpdateSuccessfully(false);
-        return;
-    }
-
-    dataModel->setModelData(
-            *(uint64_t *) &newDouble,
-            FieldTypes::DOUBLE
-    );
-    dataModel->setUpdateSuccessfully(true);
-
-}
-
-
-void
-dataChangedDouble(
-        QLineEdit *editField,
-        DataModel *dataModel
-) {
-    if (dataModel->getUpdatingFieldType() == FieldTypes::DOUBLE) {
-        return;
-    }
-
-    if (!dataModel->isUpdateSuccessful()) {
-        editField->setText("Invalid");
-        return;
-    }
-
-    uint64_t data = dataModel->getModelData();
-    double newData = *(double *) &data;
-
-    std::ostringstream ss;
-    ss << newData;
-    std::string s = ss.str();
-    editField->setText(QString::number(newData));
-}
-
-
-GenericEditField *
-EditFields::makeDoubleEditor(
-        QWidget *parent,
-        DataModel *dataModel
-) {
-    auto editField = new GenericEditField(parent, dataModel);
-
-    editField->setTextChangedFunction(&doubleTextChanged);
-    editField->setDataChangedFunction(&dataChangedDouble);
 
     return editField;
 }

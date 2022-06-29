@@ -10,8 +10,8 @@ int main(int argc, char **argv) {
     QWidget window;
     window.resize(320, 420);
 
-    auto *window_maker = new NumRepWindow();
-    window_maker->buildGui(&window);
+    auto *numRepWindow = new NumRepWindow();
+    numRepWindow->buildGui(&window);
 
     window.show();
     return app.exec();

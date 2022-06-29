@@ -16,11 +16,26 @@
 #include "../edit_fields/FieldTypes.h"
 
 
+union Number {
+    int16_t i16;
+    uint16_t u16;
+    int32_t i32;
+    uint32_t u32;
+    int64_t i64;
+    uint64_t u64;
+    float f32;
+    double f64;
+
+    // This is pretty neat.
+    Number() : u64() {}
+};
+
+
 class DataModel : public QObject {
 Q_OBJECT
 
 private:
-    uint64_t dataField_;
+     Number data_;
 
     FieldTypes updatingField_;
 
@@ -28,18 +43,18 @@ private:
 
 
 public:
-    DataModel() : dataField_{0},
+    DataModel() : data_ {},
                   updatingField_(FieldTypes::NONE),
-                  successfulUpdate_{false} {};
+                  successfulUpdate_{false} {  };
 
-    void setModelData(uint64_t data, FieldTypes source) {
-        dataField_ = data;
+    void setData(Number data, FieldTypes source) {
+        data_ = data;
         updatingField_ = source;
-        std::cout << "New dataField_ value is: " << data << std::endl;
+        std::cout << "New dataField_ value is: " << data.u64 << std::endl;
     }
 
-    uint64_t getModelData() {
-        return dataField_;
+    Number getData() {
+        return data_;
     }
 
     FieldTypes getUpdatingFieldType() {

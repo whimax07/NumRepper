@@ -53,19 +53,19 @@ BitButtons::bitChanged(
         bool state,
         int bitNumber
 ) {
-    uint64_t data = dataModel_->getModelData();
+    Number data = dataModel_->getData();
     uint64_t one = 1;
     if (state) {
-        data = data | one << bitNumber;
+        data.u64 = data.u64 | one << bitNumber;
     } else {
-        data = data & ~(one << bitNumber);
+        data.u64 = data.u64 & ~(one << bitNumber);
     }
 
     std::cout << "Bin button " << bitNumber << " changed: "
-              << data
+              << data.u64
               << std::endl;
 
-    dataModel_->setModelData(data, FieldTypes::BIN_EXPAND);
+    dataModel_->setData(data, FieldTypes::BIN_EXPAND);
     dataModel_->setUpdateSuccessfully(true);
 }
 
@@ -77,16 +77,16 @@ BitButtons::dataModelUpdated() {
     }
 
     if (!dataModel_->isUpdateSuccessful()) {
-        for (int i = 0; i < 64; i++) {
-            buttons_[i]->setChecked(true);
+        for (auto & button : buttons_) {
+            button->setChecked(true);
         }
         return;
     }
 
-    uint64_t data = dataModel_->getModelData();
+    Number data = dataModel_->getData();
     for (auto & button : buttons_) {
         // When want the buttons to be down when the bit is low.
-        button->setChecked((data & 1) == 0);
-        data = data >> 1;
+        button->setChecked((data.u64 & 1) == 0);
+        data.u64 = data.u64 >> 1;
     }
 }
