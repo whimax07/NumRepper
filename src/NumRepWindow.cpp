@@ -1,7 +1,10 @@
 #include <QPushButton>
 
 #include "NumRepWindow.h"
+#include "word_size/WordSizeSelection.h"
 
+
+void makeDataSizeSelectButtons(QWidget *widget);
 
 void
 NumRepWindow::buildGui(
@@ -10,6 +13,8 @@ NumRepWindow::buildGui(
     this->_mainPanel = main_panel;
     auto main_panel_layout = new QVBoxLayout(main_panel);
 
+    auto num_bytes_window = new WordSizeSelection(_dataModel);
+    main_panel_layout->addWidget(num_bytes_window);
 
     auto edit_panel = new QWidget(_mainPanel);
     main_panel_layout->addWidget(edit_panel);
@@ -18,19 +23,22 @@ NumRepWindow::buildGui(
     _hexEdit = EditFields::makeHexEditor(edit_panel, _dataModel);
     _binEdit = EditFields::makeBinEditor(edit_panel, _dataModel);
     _floatEdit = EditFields::makeFloatEditor(edit_panel, _dataModel);
-//    _doubleEdit = EditFields::makeDoubleEditor(edit_panel, _dataModel);
 
     auto layout = new QFormLayout(edit_panel);
     layout->addRow("Decimal", _decEdit);
     layout->addRow("Hexadecimal", _hexEdit);
     layout->addRow("Binary", _binEdit);
-    layout->addRow("Signal Precision", _floatEdit);
-//    layout->addRow("Double Precision", _doubleEdit);
+    layout->addRow("Floating Point", _floatEdit);
 
 
     _bitButtons = new BitButtons(main_panel, _dataModel);
     main_panel_layout->addWidget(_bitButtons);
 }
 
+void
+makeDataSizeSelectButtons(
+        QWidget *container
+) {
 
+}
 
