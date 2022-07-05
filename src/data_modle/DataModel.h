@@ -14,6 +14,7 @@
 #include <QtCore>
 
 #include "../edit_fields/FieldTypes.h"
+#include "../word_size/WordSizes.h"
 
 
 union Number {
@@ -35,7 +36,7 @@ class DataModel : public QObject {
 Q_OBJECT
 
 private:
-     Number data_;
+    Number data_;
 
     FieldTypes updatingField_;
 
@@ -70,8 +71,12 @@ public:
         }
     }
 
-    bool isUpdateSuccessful() {
+    bool isUpdateSuccessful() const {
         return successfulUpdate_;
+    }
+
+    void changeWordSize(WordSizes wordSize) {
+
     }
 
 

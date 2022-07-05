@@ -10,6 +10,8 @@
 #include <QRadioButton>
 #include <QHBoxLayout>
 #include "../data_modle/DataModel.h"
+#include "WordSizeRadioButton.h"
+
 
 class WordSizeSelection : public QWidget {
 Q_OBJECT
@@ -19,9 +21,9 @@ private:
 
 
 public:
-    WordSizeSelection(
+    explicit WordSizeSelection(
             DataModel *dataModel
-    ) : dataModel_{ dataModel_ } {
+    ) : dataModel_(dataModel) {
         makeAndPlaceButtons();
     }
 
@@ -30,20 +32,39 @@ private:
     void makeAndPlaceButtons() {
         auto layout = new QHBoxLayout(this);
 
-        auto b64 = new QRadioButton("64 Bits",this);
-        auto b32 = new QRadioButton("32 Bits" , this);
-        auto b16 = new QRadioButton("16 Bits" , this);
-        auto b8 = new QRadioButton("8 Bits", this);
+        makeAndPlaceButton(layout, "64 Bits", WordSizes::U64);
 
+        auto b32 = makeAndPlaceButton(
+                layout, "32 Bits", WordSizes::U32
+        );
         b32->setChecked(true);
 
-        layout->addWidget(b64);
-        layout->addWidget(b32);
-        layout->addWidget(b16);
-        layout->addWidget(b8);
+        makeAndPlaceButton(layout, "16 Bits", WordSizes::U16);
+
+        makeAndPlaceButton(layout, "8 Bits", WordSizes::U8);
+    }
+
+    WordSizeRadioButton * makeAndPlaceButton(
+            QHBoxLayout *layout,
+            const QString& name,
+            WordSizes size
+    ) {
+        auto button = new WordSizeRadioButton(
+                name, this, dataModel_, size
+        );
+
+        connect(
+                button, &WordSizeRadioButton::clicked,
+                button, &WordSizeRadioButton::updateDataModel
+        );
+
+        layout->addWidget(button);
+
+        return button;
     }
 
 };
+
 
 
 #endif //NUMREPRESENTATION_WORDSIZESELECTION_H
