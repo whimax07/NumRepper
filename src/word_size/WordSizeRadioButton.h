@@ -32,7 +32,7 @@ public:
 public slots:
     void updateDataModel(bool checked) {
         if (checked) {
-            dataModel_->changeWordSize(wordSize_);
+            dataModel_->setWordSize(wordSize_);
         }
     }
 

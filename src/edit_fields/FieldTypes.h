@@ -8,6 +8,7 @@
 
 enum class FieldTypes {
     NONE,
+    EMPTY_STRING,
     DEC,
     HEX,
     BIN,

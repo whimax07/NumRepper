@@ -32,11 +32,6 @@ public:
             DataModel *dataModel
     );
 
-    static GenericEditField * makeDoubleEditor(
-            QWidget *parent,
-            DataModel *dataModel
-    );
-
 };
 
 

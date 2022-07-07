@@ -78,18 +78,27 @@ public:
         return successfulUpdate_;
     }
 
-    void changeWordSize(E_WordSizes wordSize) {
+    void setWordSize(E_WordSizes wordSize) {
         wordSize_ = wordSize;
-        emit generalDataUpdated();
+
+        emit dataSizeChanged();
     }
 
     E_WordSizes getWordSize() {
         return wordSize_;
     }
 
+    void notifyEmptyField() {
+        emit processEmptyField();
+    }
+
 
 signals:
     void generalDataUpdated();
+
+    void dataSizeChanged();
+
+    void processEmptyField();
 
 };
 
