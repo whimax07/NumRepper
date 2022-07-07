@@ -4,7 +4,6 @@
 #include "word_size/WordSizeSelection.h"
 
 
-void makeDataSizeSelectButtons(QWidget *widget);
 
 void
 NumRepWindow::buildGui(
@@ -34,11 +33,3 @@ NumRepWindow::buildGui(
     _bitButtons = new BitButtons(main_panel, _dataModel);
     main_panel_layout->addWidget(_bitButtons);
 }
-
-void
-makeDataSizeSelectButtons(
-        QWidget *container
-) {
-
-}
-

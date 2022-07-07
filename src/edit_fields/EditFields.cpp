@@ -40,10 +40,10 @@ decTextChanged(
         data.i32 = std::stoi(textStd, &pos, 10);
     }
     catch(std::invalid_argument const& ex) {
-        INVALID_ARGUMENT_ERROR;
+        INVALID_ARGUMENT_ERROR
     }
     catch(std::out_of_range const& ex) {
-        OUT_OF_RANGE_ERROR;
+        OUT_OF_RANGE_ERROR
     }
 
     if (pos != textStd.length()) {
@@ -108,10 +108,10 @@ hexTextChanged(
         newInt.i32 = std::stoi(textStd, &pos, 16);
     }
     catch(std::invalid_argument const& ex) {
-        INVALID_ARGUMENT_ERROR;
+        INVALID_ARGUMENT_ERROR
     }
     catch(std::out_of_range const& ex) {
-        OUT_OF_RANGE_ERROR;
+        OUT_OF_RANGE_ERROR
     }
 
     if (pos != textStd.length()) {
@@ -181,10 +181,10 @@ binTextChanged(
         newInt.i32 = std::stoi(textStd, &pos, 2);
     }
     catch(std::invalid_argument const& ex) {
-        INVALID_ARGUMENT_ERROR;
+        INVALID_ARGUMENT_ERROR
     }
     catch(std::out_of_range const& ex) {
-        OUT_OF_RANGE_ERROR;
+        OUT_OF_RANGE_ERROR
     }
 
     if (pos != textStd.length()) {
@@ -248,13 +248,21 @@ floatTextChanged(
     Number newFloat;
 
     try {
-        newFloat.f32 = std::stof(textStd, &pos);
+        E_WordSizes size = dataModel->getWordSize();
+        if (size == E_WordSizes::U32) {
+            newFloat.f32 = std::stof(textStd, &pos);
+        } else if (size == E_WordSizes::U64) {
+            newFloat.f64 = std::stod(textStd, &pos);
+        } else {
+            throw std::runtime_error("Can't use float unless in 32 or 64 bit "
+                                     "mode.");
+        }
     }
     catch(std::invalid_argument const& ex) {
-        INVALID_ARGUMENT_ERROR;
+        INVALID_ARGUMENT_ERROR
     }
     catch(std::out_of_range const& ex) {
-        OUT_OF_RANGE_ERROR;
+        OUT_OF_RANGE_ERROR
     }
 
     if (pos != textStd.length()) {
@@ -282,7 +290,26 @@ dataChangedFloat(
     }
 
     Number data = dataModel->getData();
-    editField->setText(QString::number(data.f32));
+    E_WordSizes size = dataModel->getWordSize();
+
+    switch (size) {
+        case E_WordSizes::U8:
+            editField->setText("Not Implemented For 8 Bits.");
+            editField->setDisabled(true);
+            break;
+        case E_WordSizes::U16:
+            editField->setText("Not Implemented For 16 Bits.");
+            editField->setDisabled(true);
+            break;
+        case E_WordSizes::U32:
+            editField->setText(QString::number(data.f32));
+            editField->setDisabled(false);
+            break;
+        case E_WordSizes::U64:
+            editField->setText(QString::number(data.f64));
+            editField->setDisabled(false);
+            break;
+    }
 }
 
 

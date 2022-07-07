@@ -7,7 +7,7 @@
 
 
 #include <QRadioButton>
-#include "WordSizes.h"
+#include "E_WordSizes.h"
 #include "../data_modle/DataModel.h"
 
 class WordSizeRadioButton : public QRadioButton {
@@ -16,7 +16,7 @@ class WordSizeRadioButton : public QRadioButton {
 private:
     DataModel *dataModel_;
 
-    WordSizes wordSize_;
+    E_WordSizes wordSize_;
 
 
 public:
@@ -24,7 +24,7 @@ public:
             const QString &text,
             QWidget *parent,
             DataModel *dataModel,
-            WordSizes wordSize
+            E_WordSizes wordSize
     ) : QRadioButton(text, parent), dataModel_(dataModel), wordSize_(wordSize)
     {  }
 

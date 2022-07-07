@@ -32,22 +32,22 @@ private:
     void makeAndPlaceButtons() {
         auto layout = new QHBoxLayout(this);
 
-        makeAndPlaceButton(layout, "64 Bits", WordSizes::U64);
+        makeAndPlaceButton(layout, "64 Bits", E_WordSizes::U64);
 
         auto b32 = makeAndPlaceButton(
-                layout, "32 Bits", WordSizes::U32
+                layout, "32 Bits", E_WordSizes::U32
         );
         b32->setChecked(true);
 
-        makeAndPlaceButton(layout, "16 Bits", WordSizes::U16);
+        makeAndPlaceButton(layout, "16 Bits", E_WordSizes::U16);
 
-        makeAndPlaceButton(layout, "8 Bits", WordSizes::U8);
+        makeAndPlaceButton(layout, "8 Bits", E_WordSizes::U8);
     }
 
     WordSizeRadioButton * makeAndPlaceButton(
             QHBoxLayout *layout,
             const QString& name,
-            WordSizes size
+            E_WordSizes size
     ) {
         auto button = new WordSizeRadioButton(
                 name, this, dataModel_, size

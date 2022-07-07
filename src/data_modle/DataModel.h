@@ -14,7 +14,7 @@
 #include <QtCore>
 
 #include "../edit_fields/FieldTypes.h"
-#include "../word_size/WordSizes.h"
+#include "../word_size/E_WordSizes.h"
 
 
 union Number {
@@ -42,11 +42,14 @@ private:
 
     bool successfulUpdate_;
 
+    E_WordSizes wordSize_;
+
 
 public:
     DataModel() : data_ {},
                   updatingField_(FieldTypes::NONE),
-                  successfulUpdate_{false} {  };
+                  successfulUpdate_{false},
+                  wordSize_{E_WordSizes::U32} {  };
 
     void setData(Number data, FieldTypes source) {
         data_ = data;
@@ -75,8 +78,13 @@ public:
         return successfulUpdate_;
     }
 
-    void changeWordSize(WordSizes wordSize) {
+    void changeWordSize(E_WordSizes wordSize) {
+        wordSize_ = wordSize;
+        emit generalDataUpdated();
+    }
 
+    E_WordSizes getWordSize() {
+        return wordSize_;
     }
 
 
