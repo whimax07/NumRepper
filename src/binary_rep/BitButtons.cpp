@@ -90,3 +90,9 @@ BitButtons::dataModelUpdated() {
         data.u64 = data.u64 >> 1;
     }
 }
+
+void BitButtons::processEmptyString() {
+    for (auto button : buttons_) {
+        button->setChecked(true);
+    }
+}

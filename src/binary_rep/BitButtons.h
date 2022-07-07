@@ -56,9 +56,15 @@ public:
             QWidget(main_panel), dataModel_{dataModel}, buttons_{} {
 
         makeButtons();
+
         connect(
                 dataModel_, &DataModel::generalDataUpdated,
                 this, &BitButtons::dataModelUpdated
+        );
+
+        connect(
+                dataModel_, &DataModel::processEmptyField,
+                this, &BitButtons::processEmptyString
         );
     }
 
@@ -71,6 +77,8 @@ private slots:
     void bitChanged(bool state, int bitNumber);
 
     void dataModelUpdated();
+
+    void processEmptyString();
 
 };
 
