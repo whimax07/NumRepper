@@ -18,6 +18,7 @@
 
 
 union Number {
+    uint8_t u8;
     int16_t i16;
     uint16_t u16;
     int32_t i32;

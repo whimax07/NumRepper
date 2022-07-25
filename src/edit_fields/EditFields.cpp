@@ -28,7 +28,8 @@ bool
 dataChangedIntroInt(
         const QString &text,
         DataModel *dataModel,
-        Number *data
+        Number *data,
+        int base
 ) {
     const auto textStd = text.toStdString();
     std::size_t pos = 0;
@@ -39,7 +40,7 @@ dataChangedIntroInt(
     }
 
     try {
-        (*data).i32 = std::stoi(textStd, &pos, 10);
+        (*data).i32 = std::stoi(textStd, &pos, base);
     }
     catch(std::invalid_argument const& ex) {
         INVALID_ARGUMENT_ERROR
@@ -56,6 +57,51 @@ dataChangedIntroInt(
     }
 
     return true;
+}
+
+
+void
+updateTextFieldInt(
+        QLineEdit *editField,
+        DataModel *dataModel,
+        int base
+) {
+    Number data = dataModel->getData();
+    E_WordSizes size = dataModel->getWordSize();
+
+    switch (size) {
+        case E_WordSizes::U8:
+            editField->setText(QString::number(data.u8, base));
+            editField->setDisabled(false);
+            break;
+        case E_WordSizes::U16:
+            editField->setText(QString::number(data.i16, base));
+            editField->setDisabled(false);
+            break;
+        case E_WordSizes::U32:
+            editField->setText(QString::number(data.i32, base));
+            editField->setDisabled(false);
+            break;
+        case E_WordSizes::U64:
+            editField->setText(QString::number(data.i64, base));
+            editField->setDisabled(false);
+            break;
+    }
+}
+
+
+QString
+createQStringFromInt(
+        Number number,
+        E_WordSizes wordSize,
+        int base
+) {
+    switch (wordSize) {
+        case E_WordSizes::U8: return QString::number(number.u8, base);
+        case E_WordSizes::U16: return QString::number(number.u16, base);
+        case E_WordSizes::U32: return QString::number(number.u32, base);
+        case E_WordSizes::U64: return QString::number(number.u64, base);
+    }
 }
 
 
@@ -79,7 +125,7 @@ decTextChanged(
     std::cout << "Dec string changed: " << text.toStdString() << std::endl;
 
     Number data;
-    bool processingSuccessful = dataChangedIntroInt(text, dataModel, &data);
+    bool processingSuccessful = dataChangedIntroInt(text, dataModel, &data, 10);
     if (!processingSuccessful) return;
 
     dataModel->setData(data, FieldTypes::DEC);
@@ -102,7 +148,14 @@ dataChangedDec(
     }
 
     Number newNumber = dataModel->getData();
-    editField->setText(QString::number(newNumber.i32, 10));
+
+    const QString &qStringFromNumber = createQStringFromInt(
+            newNumber,
+            dataModel->getWordSize(),
+            10
+    );
+
+    editField->setText(qStringFromNumber);
 }
 
 
@@ -115,6 +168,11 @@ EditFields::makeDecEditor(
 
     editField->setTextChangedFunction(&decTextChanged);
     editField->setDataChangedFunction(&dataChangedDec);
+    editField->setDataSizeChangedFunction(
+            [] (QLineEdit *editField, DataModel *dataModel) -> void {
+                updateTextFieldInt(editField, dataModel, 10);
+            }
+    );
     editField->setProcessEmptyField(&clearField);
 
     return editField;
@@ -132,7 +190,8 @@ hexTextChanged(
     std::cout << "Hex string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntroInt(text, dataModel, &newInt);
+    bool processingSuccessful = dataChangedIntroInt(text, dataModel, &newInt,
+                                                    16);
     if (!processingSuccessful) return;
 
     dataModel->setData(newInt, FieldTypes::HEX);
@@ -161,7 +220,13 @@ dataChangedHex(
         sign = "-";
     }
 
-    editField->setText(sign + "0x" + QString::number(abs(newNumber.i32), 16));
+    const QString &qStringFromNumber = createQStringFromInt(
+            newNumber,
+            dataModel->getWordSize(),
+            16
+    );
+
+    editField->setText(sign + "0x" + qStringFromNumber);
 }
 
 
@@ -174,6 +239,11 @@ EditFields::makeHexEditor(
 
     editField->setTextChangedFunction(&hexTextChanged);
     editField->setDataChangedFunction(&dataChangedHex);
+    editField->setDataSizeChangedFunction(
+            [] (QLineEdit *editField, DataModel *dataModel) -> void {
+                updateTextFieldInt(editField, dataModel, 16);
+            }
+    );
     editField->setProcessEmptyField(&clearField);
 
     return editField;
@@ -191,7 +261,8 @@ binTextChanged(
     std::cout << "Bin string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntroInt(text, dataModel, &newInt);
+    bool processingSuccessful = dataChangedIntroInt(text, dataModel, &newInt,
+                                                    10);
     if (!processingSuccessful) return;
 
     dataModel->setData(newInt, FieldTypes::BIN);
@@ -214,7 +285,14 @@ dataChangedBin(
     }
 
     Number data = dataModel->getData();
-    editField->setText("0b" + QString::number(data.i32, 2));
+
+    const QString &qStringFromNumber = createQStringFromInt(
+            data,
+            dataModel->getWordSize(),
+            2
+    );
+
+    editField->setText("0b" + qStringFromNumber);
 }
 
 
@@ -227,6 +305,11 @@ EditFields::makeBinEditor(
 
     editField->setTextChangedFunction(&binTextChanged);
     editField->setDataChangedFunction(&dataChangedBin);
+    editField->setDataSizeChangedFunction(
+            [] (QLineEdit *editField, DataModel *dataModel) -> void {
+                updateTextFieldInt(editField, dataModel, 2);
+            }
+    );
     editField->setProcessEmptyField(&clearField);
 
     return editField;
