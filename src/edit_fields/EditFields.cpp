@@ -40,6 +40,7 @@ dataChangedIntroInt(
         return true;
     }
 
+    // TODO(Max): Add a switch on word size for the parse function.
     try {
         (*data).i32 = std::stoi(textStd, &pos, base);
     }
@@ -71,11 +72,13 @@ decTextChanged(
 ) {
     std::cout << "Dec string changed: " << text.toStdString() << std::endl;
 
-    Number data;
-    bool processingSuccessful = dataChangedIntroInt(text, dataModel, &data, 10);
+    Number newInt;
+    bool processingSuccessful = dataChangedIntroInt(
+        text, dataModel, &newInt, 10
+    );
     if (!processingSuccessful) return;
 
-    dataModel->setData(data, E_FieldTypes::DEC);
+    dataModel->setData(newInt, E_FieldTypes::DEC);
     dataModel->setUpdateSuccessfully(true);
 }
 
@@ -215,8 +218,9 @@ binTextChanged(
     std::cout << "Bin string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntroInt(text, dataModel, &newInt,
-                                                    10);
+    bool processingSuccessful = dataChangedIntroInt(
+        text, dataModel, &newInt, 2
+    );
     if (!processingSuccessful) return;
 
     dataModel->setData(newInt, E_FieldTypes::BIN);
@@ -295,8 +299,9 @@ floatChangedIntro(
         switch (wordSize) {
             case E_WordSizes::I64: data->f64 = std::stod(textStd, &pos); break;
             case E_WordSizes::I32: data->f32 = std::stof(textStd, &pos); break;
-            default: throw std::runtime_error("Can't use float unless in 32 or "
-                                              "64 bit mode.");
+            default: throw std::runtime_error(
+                    "Can't use float unless in 32 or 64 bit mode."
+            );
         }
     }
     catch(std::invalid_argument const& ex) {
