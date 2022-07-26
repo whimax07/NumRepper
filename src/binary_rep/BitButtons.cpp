@@ -5,6 +5,13 @@
 #include "BitButtons.h"
 
 
+// When want the buttons to be down when the bit is low.
+#define setBits(button, number) \
+    (button)->setChecked(((number) & 1) == 0); \
+    (number) = (number) >> 1;
+
+
+
 void
 BitButtons::makeButtons() {
     auto bin_button_layout = new QGridLayout(this);
@@ -65,14 +72,15 @@ BitButtons::bitChanged(
               << data.u64
               << std::endl;
 
-    dataModel_->setData(data, FieldTypes::BIN_EXPAND);
+    dataModel_->setNumberEmpty(data.u64 == 0);
+    dataModel_->setData(data, E_FieldTypes::BIN_EXPAND);
     dataModel_->setUpdateSuccessfully(true);
 }
 
 
 void
 BitButtons::dataModelUpdated() {
-    if (dataModel_->getUpdatingFieldType() == FieldTypes::BIN_EXPAND) {
+    if (dataModel_->getUpdatingFieldType() == E_FieldTypes::BIN_EXPAND) {
         return;
     }
 
@@ -85,14 +93,11 @@ BitButtons::dataModelUpdated() {
 
     Number data = dataModel_->getData();
     for (auto & button : buttons_) {
-        // When want the buttons to be down when the bit is low.
-        button->setChecked((data.u64 & 1) == 0);
-        data.u64 = data.u64 >> 1;
-    }
-}
-
-void BitButtons::processEmptyString() {
-    for (auto button : buttons_) {
-        button->setChecked(true);
+        switch (dataModel_->getWordSize()) {
+            case E_WordSizes::I64: setBits(button, data.u64); break;
+            case E_WordSizes::I32: setBits(button, data.u32); break;
+            case E_WordSizes::I16: setBits(button, data.u16); break;
+            case E_WordSizes::U8: setBits(button, data.u8); break;
+        }
     }
 }

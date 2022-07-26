@@ -12,6 +12,7 @@
 #include "../data_modle/DataModel.h"
 
 
+
 class BitButton : public QPushButton {
 Q_OBJECT
 
@@ -24,14 +25,16 @@ public:
             QPushButton(parent),
             bitNumber_(bitNumber)
     {
-        auto passOnBitChange = [this](bool state){
-            emit this->bitToggled(!state, this->bitNumber_);
-        };
-
         connect(
                 this, &BitButton::clicked,
-                this, passOnBitChange
+                this, &BitButton::passOnBitChange
         );
+    }
+
+
+private:
+    void passOnBitChange(bool state) {
+        emit this->bitToggled(!state, this->bitNumber_);
     }
 
 
@@ -53,18 +56,13 @@ private:
 
 public:
     BitButtons(QWidget *main_panel, DataModel *dataModel) :
-            QWidget(main_panel), dataModel_{dataModel}, buttons_{} {
+            QWidget(main_panel), dataModel_(dataModel), buttons_() {
 
         makeButtons();
 
         connect(
                 dataModel_, &DataModel::generalDataUpdated,
                 this, &BitButtons::dataModelUpdated
-        );
-
-        connect(
-                dataModel_, &DataModel::processEmptyField,
-                this, &BitButtons::processEmptyString
         );
     }
 
@@ -77,8 +75,6 @@ private slots:
     void bitChanged(bool state, int bitNumber);
 
     void dataModelUpdated();
-
-    void processEmptyString();
 
 };
 

@@ -13,8 +13,9 @@
 
 #include <QtCore>
 
-#include "../edit_fields/FieldTypes.h"
+#include "../edit_fields/E_FieldTypes.h"
 #include "../word_size/E_WordSizes.h"
+
 
 
 union Number {
@@ -33,13 +34,16 @@ union Number {
 };
 
 
+
 class DataModel : public QObject {
 Q_OBJECT
 
 private:
     Number data_;
 
-    FieldTypes updatingField_;
+    bool isEmptyNumber_;
+
+    E_FieldTypes updatingField_;
 
     bool successfulUpdate_;
 
@@ -48,11 +52,16 @@ private:
 
 public:
     DataModel() : data_ {},
-                  updatingField_(FieldTypes::NONE),
+                  isEmptyNumber_(true),
+                  updatingField_(E_FieldTypes::NONE),
                   successfulUpdate_{false},
-                  wordSize_{E_WordSizes::U32} {  };
+                  wordSize_{E_WordSizes::I32} {  };
 
-    void setData(Number data, FieldTypes source) {
+
+public:
+    // =========================================================================
+    // ===== Update the core number and attach the source. =====================
+    void setData(Number data, E_FieldTypes source) {
         data_ = data;
         updatingField_ = source;
         std::cout << "New dataField_ value is: " << data.u64 << std::endl;
@@ -62,10 +71,25 @@ public:
         return data_;
     }
 
-    FieldTypes getUpdatingFieldType() {
+    E_FieldTypes getUpdatingFieldType() {
         return updatingField_;
     }
 
+
+    // =========================================================================
+    // ===== Empty number. =====================================================
+    void setNumberEmpty(bool isNumberEmpty) {
+        isEmptyNumber_ = isNumberEmpty;
+    }
+
+    [[nodiscard]]
+    bool isNumberEmpty() const {
+        return isEmptyNumber_;
+    }
+
+
+    // =========================================================================
+    // ===== Data updated successfully. ========================================
     void setUpdateSuccessfully(bool success) {
         if (success || successfulUpdate_ != success) {
             successfulUpdate_ = success;
@@ -75,22 +99,34 @@ public:
         }
     }
 
+    [[nodiscard]]
     bool isUpdateSuccessful() const {
         return successfulUpdate_;
     }
 
+
+    // =========================================================================
+    // ===== Number word size. =================================================
     void setWordSize(E_WordSizes wordSize) {
         wordSize_ = wordSize;
+        updatingField_ = E_FieldTypes::WORD_SIZE;
 
-        emit dataSizeChanged();
+        int num_bytes = 0;
+        switch (wordSize) {
+            case E_WordSizes::U8: num_bytes = 1; break;
+            case E_WordSizes::I16: num_bytes = 2; break;
+            case E_WordSizes::I32: num_bytes = 4; break;
+            case E_WordSizes::I64: num_bytes = 8; break;
+        }
+        uint64_t base = -1;
+        int bits_to_shift = 8 * (8 - num_bytes);
+        data_.u64 = data_.u64 & (base >> bits_to_shift);
+
+        emit generalDataUpdated();
     }
 
     E_WordSizes getWordSize() {
         return wordSize_;
-    }
-
-    void notifyEmptyField() {
-        emit processEmptyField();
     }
 
 
@@ -98,8 +134,6 @@ signals:
     void generalDataUpdated();
 
     void dataSizeChanged();
-
-    void processEmptyField();
 
 };
 

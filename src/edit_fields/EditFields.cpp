@@ -35,8 +35,9 @@ dataChangedIntroInt(
     std::size_t pos = 0;
 
     if (textStd.length() == 0) {
-        dataModel->notifyEmptyField();
-        return false;
+        dataModel->setNumberEmpty(true);
+        *data = Number();
+        return true;
     }
 
     try {
@@ -60,60 +61,6 @@ dataChangedIntroInt(
 }
 
 
-void
-updateTextFieldInt(
-        QLineEdit *editField,
-        DataModel *dataModel,
-        int base
-) {
-    Number data = dataModel->getData();
-    E_WordSizes size = dataModel->getWordSize();
-
-    switch (size) {
-        case E_WordSizes::U8:
-            editField->setText(QString::number(data.u8, base));
-            editField->setDisabled(false);
-            break;
-        case E_WordSizes::U16:
-            editField->setText(QString::number(data.i16, base));
-            editField->setDisabled(false);
-            break;
-        case E_WordSizes::U32:
-            editField->setText(QString::number(data.i32, base));
-            editField->setDisabled(false);
-            break;
-        case E_WordSizes::U64:
-            editField->setText(QString::number(data.i64, base));
-            editField->setDisabled(false);
-            break;
-    }
-}
-
-
-QString
-createQStringFromInt(
-        Number number,
-        E_WordSizes wordSize,
-        int base
-) {
-    switch (wordSize) {
-        case E_WordSizes::U8: return QString::number(number.u8, base);
-        case E_WordSizes::U16: return QString::number(number.u16, base);
-        case E_WordSizes::U32: return QString::number(number.u32, base);
-        case E_WordSizes::U64: return QString::number(number.u64, base);
-    }
-}
-
-
-void
-clearField(
-        QLineEdit *editField,
-        DataModel *dataModel
-) {
-    editField->setText("");
-}
-
-
 // =============================================================================
 // ===== Dec ===================================================================
 
@@ -128,7 +75,7 @@ decTextChanged(
     bool processingSuccessful = dataChangedIntroInt(text, dataModel, &data, 10);
     if (!processingSuccessful) return;
 
-    dataModel->setData(data, FieldTypes::DEC);
+    dataModel->setData(data, E_FieldTypes::DEC);
     dataModel->setUpdateSuccessfully(true);
 }
 
@@ -138,7 +85,7 @@ dataChangedDec(
         QLineEdit *editField,
         DataModel *dataModel
 ) {
-    if (dataModel->getUpdatingFieldType() == FieldTypes::DEC) {
+    if (dataModel->getUpdatingFieldType() == E_FieldTypes::DEC) {
         return;
     }
 
@@ -147,15 +94,21 @@ dataChangedDec(
         return;
     }
 
-    Number newNumber = dataModel->getData();
+    QString displayString = "";
 
-    const QString &qStringFromNumber = createQStringFromInt(
-            newNumber,
-            dataModel->getWordSize(),
-            10
-    );
+    if (!dataModel->isNumberEmpty()) {
+        Number number = dataModel->getData();
+        E_WordSizes wordSize = dataModel->getWordSize();
 
-    editField->setText(qStringFromNumber);
+        switch (wordSize) {
+            case E_WordSizes::U8: displayString = QString::number(number.u8, 10); break;
+            case E_WordSizes::I16: displayString = QString::number(number.i16, 10); break;
+            case E_WordSizes::I32: displayString = QString::number(number.i32, 10); break;
+            case E_WordSizes::I64: displayString = QString::number(number.i64, 10); break;
+        }
+    }
+    
+    editField->setText(displayString);
 }
 
 
@@ -168,12 +121,6 @@ EditFields::makeDecEditor(
 
     editField->setTextChangedFunction(&decTextChanged);
     editField->setDataChangedFunction(&dataChangedDec);
-    editField->setDataSizeChangedFunction(
-            [] (QLineEdit *editField, DataModel *dataModel) -> void {
-                updateTextFieldInt(editField, dataModel, 10);
-            }
-    );
-    editField->setProcessEmptyField(&clearField);
 
     return editField;
 }
@@ -190,11 +137,12 @@ hexTextChanged(
     std::cout << "Hex string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntroInt(text, dataModel, &newInt,
-                                                    16);
+    bool processingSuccessful = dataChangedIntroInt(
+            text, dataModel, &newInt, 16
+    );
     if (!processingSuccessful) return;
 
-    dataModel->setData(newInt, FieldTypes::HEX);
+    dataModel->setData(newInt, E_FieldTypes::HEX);
     dataModel->setUpdateSuccessfully(true);
 }
 
@@ -204,7 +152,7 @@ dataChangedHex(
         QLineEdit *editField,
         DataModel *dataModel
 ) {
-    if (dataModel->getUpdatingFieldType() == FieldTypes::HEX) {
+    if (dataModel->getUpdatingFieldType() == E_FieldTypes::HEX) {
         return;
     }
 
@@ -213,20 +161,32 @@ dataChangedHex(
         return;
     }
 
-    Number newNumber = dataModel->getData();
+    
+    QString displayString = "";
     QString sign = "";
 
-    if (newNumber.i32 < 0) {
-        sign = "-";
+    if (!dataModel->isNumberEmpty()) {
+        Number newNumber = dataModel->getData();
+        E_WordSizes wordSize = dataModel->getWordSize();
+
+        switch (wordSize) {
+            case E_WordSizes::I64: if (newNumber.i64 < 0) sign = "-"; break;
+            case E_WordSizes::I32: if (newNumber.i32 < 0) sign = "-"; break;
+            case E_WordSizes::I16: if (newNumber.i16 < 0) sign = "-"; break;
+            default: break;
+        }
+
+        switch (wordSize) {
+            case E_WordSizes::U8: displayString = QString::number(newNumber.u8, 16); break;
+            case E_WordSizes::I16: displayString = QString::number(newNumber.i16, 16); break;
+            case E_WordSizes::I32: displayString = QString::number(newNumber.i32, 16); break;
+            case E_WordSizes::I64: displayString = QString::number(newNumber.i64, 16); break;
+        }
+
+        displayString = "0x" + displayString;
     }
 
-    const QString &qStringFromNumber = createQStringFromInt(
-            newNumber,
-            dataModel->getWordSize(),
-            16
-    );
-
-    editField->setText(sign + "0x" + qStringFromNumber);
+    editField->setText(displayString);
 }
 
 
@@ -239,12 +199,6 @@ EditFields::makeHexEditor(
 
     editField->setTextChangedFunction(&hexTextChanged);
     editField->setDataChangedFunction(&dataChangedHex);
-    editField->setDataSizeChangedFunction(
-            [] (QLineEdit *editField, DataModel *dataModel) -> void {
-                updateTextFieldInt(editField, dataModel, 16);
-            }
-    );
-    editField->setProcessEmptyField(&clearField);
 
     return editField;
 }
@@ -265,7 +219,7 @@ binTextChanged(
                                                     10);
     if (!processingSuccessful) return;
 
-    dataModel->setData(newInt, FieldTypes::BIN);
+    dataModel->setData(newInt, E_FieldTypes::BIN);
     dataModel->setUpdateSuccessfully(true);
 }
 
@@ -275,7 +229,7 @@ dataChangedBin(
         QLineEdit *editField,
         DataModel *dataModel
 ) {
-    if (dataModel->getUpdatingFieldType() == FieldTypes::BIN) {
+    if (dataModel->getUpdatingFieldType() == E_FieldTypes::BIN) {
         return;
     }
 
@@ -284,15 +238,23 @@ dataChangedBin(
         return;
     }
 
-    Number data = dataModel->getData();
+    QString displayString = "";
 
-    const QString &qStringFromNumber = createQStringFromInt(
-            data,
-            dataModel->getWordSize(),
-            2
-    );
+    if (!dataModel->isNumberEmpty()) {
+        Number newNumber = dataModel->getData();
+        E_WordSizes wordSize = dataModel->getWordSize();
 
-    editField->setText("0b" + qStringFromNumber);
+        switch (wordSize) {
+            case E_WordSizes::U8: displayString = QString::number(newNumber.u8, 2); break;
+            case E_WordSizes::I16: displayString = QString::number(newNumber.u16, 2); break;
+            case E_WordSizes::I32: displayString = QString::number(newNumber.u32, 2); break;
+            case E_WordSizes::I64: displayString = QString::number(newNumber.u64, 2); break;
+        }
+
+        displayString = "0b" + displayString;
+    }
+
+    editField->setText(displayString);
 }
 
 
@@ -305,12 +267,6 @@ EditFields::makeBinEditor(
 
     editField->setTextChangedFunction(&binTextChanged);
     editField->setDataChangedFunction(&dataChangedBin);
-    editField->setDataSizeChangedFunction(
-            [] (QLineEdit *editField, DataModel *dataModel) -> void {
-                updateTextFieldInt(editField, dataModel, 2);
-            }
-    );
-    editField->setProcessEmptyField(&clearField);
 
     return editField;
 }
@@ -319,107 +275,61 @@ EditFields::makeBinEditor(
 // =============================================================================
 // ===== Float =================================================================
 
+bool
+floatChangedIntro(
+        const std::string& textStd,
+        DataModel *dataModel,
+        Number *data
+) {
+    std::cout << "Float string changed: " << textStd << std::endl;
+
+    if (textStd.length() == 0) {
+        dataModel->setNumberEmpty(true);
+        *data = Number();
+        return true;
+    }
+
+    std::size_t pos = 0;
+    try {
+        E_WordSizes wordSize = dataModel->getWordSize();
+        switch (wordSize) {
+            case E_WordSizes::I64: data->f64 = std::stod(textStd, &pos); break;
+            case E_WordSizes::I32: data->f32 = std::stof(textStd, &pos); break;
+            default: throw std::runtime_error("Can't use float unless in 32 or "
+                                              "64 bit mode.");
+        }
+    }
+    catch(std::invalid_argument const& ex) {
+        INVALID_ARGUMENT_ERROR
+        return false;
+    }
+    catch(std::out_of_range const& ex) {
+        OUT_OF_RANGE_ERROR
+        return false;
+    }
+
+    if (pos != textStd.length()) {
+        dataModel->setUpdateSuccessfully(false);
+        return false;
+    }
+
+    return true;
+}
+
+
 void
 floatTextChanged(
         const QString &text,
         DataModel *dataModel
 ) {
     const auto textStd = text.toStdString();
+    Number newFloat = Number();
 
-    if (textStd.length() == 0) {
-        dataModel->processEmptyField();
-        return;
-    }
+    bool goodParse = floatChangedIntro(textStd, dataModel, &newFloat);
+    if (!goodParse) return;
 
-    std::size_t pos = 0;
-
-    std::cout << "Float string changed: "
-              << text.toStdString()
-              << std::endl;
-
-    Number newFloat;
-
-    try {
-        E_WordSizes size = dataModel->getWordSize();
-        if (size == E_WordSizes::U32) {
-            newFloat.f32 = std::stof(textStd, &pos);
-        } else if (size == E_WordSizes::U64) {
-            newFloat.f64 = std::stod(textStd, &pos);
-        } else {
-            throw std::runtime_error("Can't use float unless in 32 or 64 bit "
-                                     "mode.");
-        }
-    }
-    catch(std::invalid_argument const& ex) {
-        INVALID_ARGUMENT_ERROR
-        return;
-    }
-    catch(std::out_of_range const& ex) {
-        OUT_OF_RANGE_ERROR
-        return;
-    }
-
-    if (pos != textStd.length()) {
-        dataModel->setUpdateSuccessfully(false);
-        return;
-    }
-
-    dataModel->setData(newFloat, FieldTypes::FLOAT);
+    dataModel->setData(newFloat, E_FieldTypes::FLOAT);
     dataModel->setUpdateSuccessfully(true);
-}
-
-
-void
-updateTextFieldFloat(
-        QLineEdit *editField,
-        DataModel *dataModel
-) {
-    Number data = dataModel->getData();
-    E_WordSizes size = dataModel->getWordSize();
-
-    switch (size) {
-        case E_WordSizes::U8:
-            editField->setText("Not Implemented For 8 Bits.");
-            editField->setDisabled(true);
-            break;
-        case E_WordSizes::U16:
-            editField->setText("Not Implemented For 16 Bits.");
-            editField->setDisabled(true);
-            break;
-        case E_WordSizes::U32:
-            editField->setText(QString::number(data.f32));
-            editField->setDisabled(false);
-            break;
-        case E_WordSizes::U64:
-            editField->setText(QString::number(data.f64));
-            editField->setDisabled(false);
-            break;
-    }
-}
-
-
-void
-processEmptyFieldFloat(
-        QLineEdit *editField,
-        DataModel *dataModel
-) {
-    E_WordSizes size = dataModel->getWordSize();
-
-    switch (size) {
-        case E_WordSizes::U8:
-            editField->setText("Not Implemented For 8 Bits.");
-            editField->setDisabled(true);
-            break;
-        case E_WordSizes::U16:
-            editField->setText("Not Implemented For 16 Bits.");
-            editField->setDisabled(true);
-            break;
-        case E_WordSizes::U32:
-        case E_WordSizes::U64:
-            editField->setText("");
-            editField->setDisabled(false);
-            break;
-    }
 }
 
 
@@ -428,7 +338,7 @@ dataChangedFloat(
         QLineEdit *editField,
         DataModel *dataModel
 ) {
-    if (dataModel->getUpdatingFieldType() == FieldTypes::FLOAT) {
+    if (dataModel->getUpdatingFieldType() == E_FieldTypes::FLOAT) {
         return;
     }
 
@@ -437,7 +347,33 @@ dataChangedFloat(
         return;
     }
 
-    updateTextFieldFloat(editField, dataModel);
+
+    Number data = dataModel->getData();
+    E_WordSizes size = dataModel->getWordSize();
+    QString qString;
+
+    switch (size) {
+        case E_WordSizes::U8:
+            editField->setText("Not Implemented For 8 Bits.");
+            editField->setDisabled(true);
+            break;
+        case E_WordSizes::I16:
+            editField->setText("Not Implemented For 16 Bits.");
+            editField->setDisabled(true);
+            break;
+        case E_WordSizes::I32:
+            qString = (dataModel->isNumberEmpty())
+                      ? "" : QString::number(data.f32);
+            editField->setText(qString);
+            editField->setDisabled(false);
+            break;
+        case E_WordSizes::I64:
+            qString = (dataModel->isNumberEmpty())
+                      ? "" : QString::number(data.f64);
+            editField->setText(qString);
+            editField->setDisabled(false);
+            break;
+    }
 }
 
 
@@ -450,8 +386,6 @@ EditFields::makeFloatEditor(
 
     editField->setTextChangedFunction(&floatTextChanged);
     editField->setDataChangedFunction(&dataChangedFloat);
-    editField->setDataSizeChangedFunction(&updateTextFieldFloat);
-    editField->setProcessEmptyField(&processEmptyFieldFloat);
 
     return editField;
 }

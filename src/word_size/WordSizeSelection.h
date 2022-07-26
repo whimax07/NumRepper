@@ -21,9 +21,7 @@ private:
 
 
 public:
-    explicit WordSizeSelection(
-            DataModel *dataModel
-    ) : dataModel_(dataModel) {
+    explicit WordSizeSelection(DataModel *dataModel) : dataModel_(dataModel) {
         makeAndPlaceButtons();
     }
 
@@ -32,14 +30,14 @@ private:
     void makeAndPlaceButtons() {
         auto layout = new QHBoxLayout(this);
 
-        makeAndPlaceButton(layout, "64 Bits", E_WordSizes::U64);
+        makeAndPlaceButton(layout, "64 Bits", E_WordSizes::I64);
 
         auto b32 = makeAndPlaceButton(
-                layout, "32 Bits", E_WordSizes::U32
+                layout, "32 Bits", E_WordSizes::I32
         );
         b32->setChecked(true);
 
-        makeAndPlaceButton(layout, "16 Bits", E_WordSizes::U16);
+        makeAndPlaceButton(layout, "16 Bits", E_WordSizes::I16);
 
         makeAndPlaceButton(layout, "8 Bits", E_WordSizes::U8);
     }
