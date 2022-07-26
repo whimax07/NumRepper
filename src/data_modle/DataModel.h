@@ -111,7 +111,14 @@ public:
         wordSize_ = wordSize;
         updatingField_ = E_FieldTypes::WORD_SIZE;
 
-        int num_bytes = 0;
+        // TODO(Max): Check if notting an int of the right size is a better way 
+        //  to make the mask. I.e.
+        //      uint16_t small_mask = 0;
+        //      uint64_t mask = (uint64_t) ~small_mask;
+        // or
+        //      uint64_t mask = (uint64_t) (~ (uint16_t) 0);
+        // data_.u64 = data.u64 & mask;
+        int numBytes = 0;
         switch (wordSize) {
             case E_WordSizes::U8: num_bytes = 1; break;
             case E_WordSizes::I16: num_bytes = 2; break;
@@ -119,8 +126,8 @@ public:
             case E_WordSizes::I64: num_bytes = 8; break;
         }
         uint64_t base = -1;
-        int bits_to_shift = 8 * (8 - num_bytes);
-        data_.u64 = data_.u64 & (base >> bits_to_shift);
+        int bitsToShift = 8 * (8 - num_bytes);
+        data_.u64 = data_.u64 & (base >> bitsToShift);
 
         emit generalDataUpdated();
     }
