@@ -5,7 +5,7 @@
 #include "BitButtons.h"
 
 
-// When want the buttons to be down when the bit is low.
+// We want the buttons to be down when the bit is low.
 #define setBits(button, number) \
     (button)->setChecked(((number) & 1) == 0); \
     (number) = (number) >> 1;
