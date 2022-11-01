@@ -120,13 +120,13 @@ public:
         // data_.u64 = data.u64 & mask;
         int numBytes = 0;
         switch (wordSize) {
-            case E_WordSizes::U8: num_bytes = 1; break;
-            case E_WordSizes::I16: num_bytes = 2; break;
-            case E_WordSizes::I32: num_bytes = 4; break;
-            case E_WordSizes::I64: num_bytes = 8; break;
+            case E_WordSizes::U8: numBytes = 1; break;
+            case E_WordSizes::I16: numBytes = 2; break;
+            case E_WordSizes::I32: numBytes = 4; break;
+            case E_WordSizes::I64: numBytes = 8; break;
         }
         uint64_t base = -1;
-        int bitsToShift = 8 * (8 - num_bytes);
+        int bitsToShift = 8 * (8 - numBytes);
         data_.u64 = data_.u64 & (base >> bitsToShift);
 
         emit generalDataUpdated();

@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "EditFields.h"
+#include "../utils/Utils.h"
 
 
 #define INVALID_ARGUMENT_ERROR \
@@ -25,24 +26,41 @@
 // ===== Utils =================================================================
 
 bool
-dataChangedIntroInt(
+dataChangedIntoInt(
         const QString &text,
         DataModel *dataModel,
-        Number *data,
+        Number &data,
         int base
 ) {
-    const auto textStd = text.toStdString();
+    auto textStd = text.toStdString();
     std::size_t pos = 0;
 
     if (textStd.length() == 0) {
         dataModel->setNumberEmpty(true);
-        *data = Number();
+        data = Number();
         return true;
     }
 
-    // TODO(Max): Add a switch on word size for the parse function.
+    // Remove any prefixes.
+    textStd = repper::Utils::removeFormatPrefix(textStd, 2);
+    textStd = repper::Utils::removeFormatPrefix(textStd, 16);
+
+
     try {
-        (*data).i32 = std::stoi(textStd, &pos, base);
+        switch (dataModel->getWordSize()) {
+            case E_WordSizes::U8:
+                data.u8 = static_cast<uint8_t>(std::stoull(textStd, &pos, base));
+                break;
+            case E_WordSizes::I16:
+                data.i16 = static_cast<int16_t>(std::stoi(textStd, &pos, base));
+                break;
+            case E_WordSizes::I32:
+                data.i32 = std::stoi(textStd, &pos, base);
+                break;
+            case E_WordSizes::I64:
+                data.i64 = static_cast<int64_t>(std::stoll(textStd, &pos, base));
+                break;
+        }
     }
     catch(std::invalid_argument const& ex) {
         INVALID_ARGUMENT_ERROR
@@ -73,8 +91,8 @@ decTextChanged(
     std::cout << "Dec string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntroInt(
-        text, dataModel, &newInt, 10
+    bool processingSuccessful = dataChangedIntoInt(
+            text, dataModel, newInt, 10
     );
     if (!processingSuccessful) return;
 
@@ -140,8 +158,8 @@ hexTextChanged(
     std::cout << "Hex string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntroInt(
-            text, dataModel, &newInt, 16
+    bool processingSuccessful = dataChangedIntoInt(
+            text, dataModel, newInt, 16
     );
     if (!processingSuccessful) return;
 
@@ -218,8 +236,8 @@ binTextChanged(
     std::cout << "Bin string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntroInt(
-        text, dataModel, &newInt, 2
+    bool processingSuccessful = dataChangedIntoInt(
+            text, dataModel, newInt, 2
     );
     if (!processingSuccessful) return;
 

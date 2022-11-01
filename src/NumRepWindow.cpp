@@ -23,11 +23,11 @@ NumRepWindow::buildGui(
     _binEdit = EditFields::makeBinEditor(edit_panel, _dataModel);
     _floatEdit = EditFields::makeFloatEditor(edit_panel, _dataModel);
 
-    auto layout = new QFormLayout(edit_panel);
-    layout->addRow("Decimal", _decEdit);
-    layout->addRow("Hexadecimal", _hexEdit);
-    layout->addRow("Binary", _binEdit);
-    layout->addRow("Floating Point", _floatEdit);
+    auto textEditLayout = new QFormLayout(edit_panel);
+    textEditLayout->addRow("Decimal", _decEdit);
+    textEditLayout->addRow("Hexadecimal", _hexEdit);
+    textEditLayout->addRow("Binary", _binEdit);
+    textEditLayout->addRow("Floating Point", _floatEdit);
 
 
     _bitButtons = new BitButtons(main_panel, _dataModel);

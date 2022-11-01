@@ -5,7 +5,7 @@
 
 
 int main(int argc, char **argv) {
-    QApplication app (argc, argv);
+    QApplication  app (argc, argv);
 
     QWidget window;
 //    window.resize(320, 420);
