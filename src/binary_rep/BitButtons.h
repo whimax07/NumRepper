@@ -34,7 +34,7 @@ public:
 
 private:
     void passOnBitChange(bool state) {
-        emit this->bitToggled(!state, this->bitNumber_);
+        emit this->bitToggled(state, this->bitNumber_);
     }
 
 

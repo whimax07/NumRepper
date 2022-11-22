@@ -7,7 +7,7 @@
 
 // We want the buttons to be down when the bit is low.
 #define setBits(button, number) \
-    (button)->setChecked(((number) & 1) == 0); \
+    (button)->setChecked(((number) & 1) == 1); \
     (number) = (number) >> 1;
 
 
@@ -23,7 +23,7 @@ BitButtons::makeButtons() {
             bit_button->setText(QString::number(((j * 16) + i)));
             bit_button->setMinimumWidth(1);
             bit_button->setCheckable(true);
-            bit_button->setChecked(true);
+            bit_button->setChecked(false);
 
              connect(
                      bit_button, &BitButton::bitToggled,
