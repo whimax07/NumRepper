@@ -15,7 +15,7 @@
 
 #include "../edit_fields/E_FieldTypes.h"
 #include "../word_size/E_WordSizes.h"
-
+#include "../edit_fields/E_DataUpdateErrors.h"
 
 
 union Number {

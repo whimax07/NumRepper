@@ -5,7 +5,7 @@
 #include <QFormLayout>
 
 #include "binary_rep/BitButtons.h"
-#include "data_modle/DataModel.h"
+#include "data_model/DataModel.h"
 #include "edit_fields/EditFields.h"
 #include "edit_fields/GenericEditField.h"
 

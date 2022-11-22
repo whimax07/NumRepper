@@ -7,6 +7,7 @@
 
 
 #include "GenericEditField.h"
+#include "../data_model/DataModel.h"
 
 
 class EditFields {

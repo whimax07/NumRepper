@@ -8,7 +8,7 @@
 
 #include <QLineEdit>
 
-#include "../data_modle/DataModel.h"
+#include "../data_model/DataModel.h"
 
 
 
