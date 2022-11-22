@@ -8,25 +8,43 @@
 #include "../utils/Utils.h"
 
 
-#define INVALID_ARGUMENT_ERROR \
-    std::cout << "std::invalid_argument::what(): " \
-              << ex.what() \
-              << std::endl; \
-    dataModel->setUpdateSuccessfully(false); \
 
-#define OUT_OF_RANGE_ERROR \
-    std::cout << "std::out_of_range::what(): " \
-              << ex.what() \
-              << std::endl; \
-    dataModel->setUpdateSuccessfully(false); \
 
 
 
 // =============================================================================
 // ===== Utils =================================================================
 
-bool
-dataChangedIntoInt(
+CPP_LOCAL_FUN void invalidArgumentError(
+        const std::invalid_argument& error,
+        DataModel *dataModel
+) {
+    std::cout << "std::invalid_argument::what(): "
+              << std::endl
+              << error.what()
+              << std::endl;
+    dataModel->setUpdateSuccessfully(false);
+}
+
+
+CPP_LOCAL_FUN void outOfRangeError(
+        const std::out_of_range& error,
+        DataModel *dataModel
+) {
+    std::cout << "std::out_of_range::what(): "
+              << std::endl
+              << error.what()
+              << std::endl;
+    dataModel->setUpdateSuccessfully(false);
+}
+
+
+/**
+ * An Unsigned version of this function is needed as std::stoi will fail if the
+ * in `text` is larger than `U32.MAX_VALUE` which `U32.MAX_VALUE` is.
+ */
+CPP_LOCAL_FUN bool
+dataChangedIntoSignedInt(
         const QString &text,
         DataModel *dataModel,
         Number &data,
@@ -63,11 +81,11 @@ dataChangedIntoInt(
         }
     }
     catch(std::invalid_argument const& ex) {
-        INVALID_ARGUMENT_ERROR
+        invalidArgumentError(ex, dataModel);
         return false;
     }
     catch(std::out_of_range const& ex) {
-        OUT_OF_RANGE_ERROR
+        outOfRangeError(ex, dataModel);
         return false;
     }
 
@@ -323,11 +341,11 @@ floatChangedIntro(
         }
     }
     catch(std::invalid_argument const& ex) {
-        INVALID_ARGUMENT_ERROR
+        invalidArgumentError(ex, dataModel);
         return false;
     }
     catch(std::out_of_range const& ex) {
-        OUT_OF_RANGE_ERROR
+        outOfRangeError(ex, dataModel);
         return false;
     }
 
