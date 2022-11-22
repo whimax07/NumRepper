@@ -18,13 +18,15 @@ NumRepWindow::buildGui(
     auto edit_panel = new QWidget(_mainPanel);
     main_panel_layout->addWidget(edit_panel);
 
-    _decEdit = EditFields::makeDecEditor(edit_panel, _dataModel);
+    _sDecEdit = EditFields::makeSignedDecEditor(edit_panel, _dataModel);
+    _uDecEdit = EditFields::makeUnsignedDecEditor(edit_panel, _dataModel);
     _hexEdit = EditFields::makeHexEditor(edit_panel, _dataModel);
     _binEdit = EditFields::makeBinEditor(edit_panel, _dataModel);
     _floatEdit = EditFields::makeFloatEditor(edit_panel, _dataModel);
 
     auto textEditLayout = new QFormLayout(edit_panel);
-    textEditLayout->addRow("Decimal", _decEdit);
+    textEditLayout->addRow("Decimal, Signed", _sDecEdit);
+    textEditLayout->addRow("Decimal, Unsigned", _uDecEdit);
     textEditLayout->addRow("Hexadecimal", _hexEdit);
     textEditLayout->addRow("Binary", _binEdit);
     textEditLayout->addRow("Floating Point", _floatEdit);

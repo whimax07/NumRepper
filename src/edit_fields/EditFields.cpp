@@ -12,6 +12,17 @@
 
 #define CPP_LOCAL_FUN static
 
+#define RETURN_IF_TO_LARGE(value, max_value, dataModel) \
+    if ((value) > (max_value)) { \
+        (dataModel)->setUpdateSuccessfully(false); \
+        return false; \
+    }
+
+#define RETURN_IF_TO_SMALL(value, min_value, dataModel) \
+    if ((value) < (min_value)) { \
+        (dataModel)->setUpdateSuccessfully(false); \
+        return false; \
+    }
 
 // =============================================================================
 // ===== Utils =================================================================
@@ -61,25 +72,17 @@ dataChangedIntoSignedInt(
     }
 
     // Remove any prefixes.
-    textStd = repper::Utils::removeFormatPrefix(textStd, 2);
-    textStd = repper::Utils::removeFormatPrefix(textStd, 16);
+    if (base == 2) {
+        textStd = repper::Utils::removeFormatPrefix(textStd, 2);
+    }
+    if (base == 16) {
+        textStd = repper::Utils::removeFormatPrefix(textStd, 16);
+    }
 
 
+    long long parsedValue = 0;
     try {
-        switch (dataModel->getWordSize()) {
-            case E_WordSizes::U8:
-                data.u8 = static_cast<uint8_t>(std::stoull(textStd, &pos, base));
-                break;
-            case E_WordSizes::I16:
-                data.i16 = static_cast<int16_t>(std::stoi(textStd, &pos, base));
-                break;
-            case E_WordSizes::I32:
-                data.i32 = std::stoi(textStd, &pos, base);
-                break;
-            case E_WordSizes::I64:
-                data.i64 = static_cast<int64_t>(std::stoll(textStd, &pos, base));
-                break;
-        }
+        parsedValue = std::stoll(textStd, &pos, base);
     }
     catch(std::invalid_argument const& ex) {
         invalidArgumentError(ex, dataModel);
@@ -88,6 +91,96 @@ dataChangedIntoSignedInt(
     catch(std::out_of_range const& ex) {
         outOfRangeError(ex, dataModel);
         return false;
+    }
+
+    switch (dataModel->getWordSize()) {
+        case E_WordSizes::U8:
+            RETURN_IF_TO_LARGE(parsedValue, INT8_MAX, dataModel);
+            RETURN_IF_TO_SMALL(parsedValue, INT8_MIN, dataModel);
+            data.i8 = static_cast<int8_t>(parsedValue);
+            break;
+        case E_WordSizes::U16:
+            RETURN_IF_TO_LARGE(parsedValue, INT16_MAX, dataModel);
+            RETURN_IF_TO_SMALL(parsedValue, INT16_MIN, dataModel);
+            data.i16 = static_cast<int16_t>(parsedValue);
+            break;
+        case E_WordSizes::U32:
+            RETURN_IF_TO_LARGE(parsedValue, INT32_MAX, dataModel);
+            RETURN_IF_TO_SMALL(parsedValue, INT32_MIN, dataModel);
+            data.i32 = static_cast<int32_t>(parsedValue);
+            break;
+        case E_WordSizes::U64:
+            data.i64 = parsedValue;
+            break;
+    }
+
+    if (pos != textStd.length()) {
+        dataModel->setUpdateSuccessfully(false);
+        return false;
+    }
+
+    return true;
+}
+
+
+// NOTE(Max): I am not sure what the best way is to both keep down code 
+// reproduction and maintain readability. The dataChangedIntoSignedInt pair 
+// could be a singed and unsigned version (current), or a templated function or 
+// a capturing lambda (with container taking a std::function). 
+CPP_LOCAL_FUN bool
+dataChangedIntoUnsignedInt(
+        const QString &text,
+        DataModel *dataModel,
+        Number &data,
+        int base
+) {
+    auto textStd = text.toStdString();
+    std::size_t pos = 0;
+
+    if (textStd.length() == 0) {
+        dataModel->setNumberEmpty(true);
+        data = Number();
+        return true;
+    }
+
+    // Remove any prefixes.
+    if (base == 2) {
+        textStd = repper::Utils::removeFormatPrefix(textStd, 2);
+    }
+    if (base == 16) {
+        textStd = repper::Utils::removeFormatPrefix(textStd, 16);
+    }
+
+
+    unsigned long long int parsedNumber = 0;
+    try {
+        parsedNumber = std::stoull(textStd, &pos, base);
+    }
+    catch(std::invalid_argument const& ex) {
+        invalidArgumentError(ex, dataModel);
+        return false;
+    }
+    catch(std::out_of_range const& ex) {
+        outOfRangeError(ex, dataModel);
+        return false;
+    }
+
+    switch (dataModel->getWordSize()) {
+        case E_WordSizes::U8:
+            RETURN_IF_TO_LARGE(parsedNumber, UINT8_MAX, dataModel)
+            data.u8 = static_cast<uint8_t>(parsedNumber);
+            break;
+        case E_WordSizes::U16:
+            RETURN_IF_TO_LARGE(parsedNumber, UINT16_MAX, dataModel)
+            data.u16 = static_cast<uint16_t>(parsedNumber);
+            break;
+        case E_WordSizes::U32:
+            RETURN_IF_TO_LARGE(parsedNumber, UINT32_MAX, dataModel)
+            data.u32 = static_cast<uint32_t>(parsedNumber);
+            break;
+        case E_WordSizes::U64:
+            data.u64 = static_cast<uint64_t>(parsedNumber);
+            break;
     }
 
     if (pos != textStd.length()) {
@@ -100,7 +193,7 @@ dataChangedIntoSignedInt(
 
 
 // =============================================================================
-// ===== Dec ===================================================================
+// ===== Dec Singed ============================================================
 
 CPP_LOCAL_FUN void
 signedDecTextChanged(
@@ -110,7 +203,7 @@ signedDecTextChanged(
     std::cout << "Dec string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntoInt(
+    bool processingSuccessful = dataChangedIntoSignedInt(
             text, dataModel, newInt, 10
     );
     if (!processingSuccessful) return;
@@ -153,14 +246,84 @@ dataChangedSignedDec(
 
 
 GenericEditField *
-EditFields::makeDecEditor(
+EditFields::makeSignedDecEditor(
         QWidget *parent,
         DataModel *dataModel
 ) {
     auto editField = new GenericEditField(parent, dataModel);
 
-    editField->setTextChangedFunction(&decTextChanged);
-    editField->setDataChangedFunction(&dataChangedDec);
+    editField->setTextChangedFunction(&signedDecTextChanged);
+    editField->setDataChangedFunction(&dataChangedSignedDec);
+
+    return editField;
+}
+
+
+// =============================================================================
+// ===== Dec Unsigned ==========================================================
+
+CPP_LOCAL_FUN void
+unsignedDecTextChanged(
+        const QString &text,
+        DataModel *dataModel
+) {
+    std::cout << "Dec string changed: " << text.toStdString() << std::endl;
+
+    Number newInt;
+    bool processingSuccessful = dataChangedIntoUnsignedInt(
+            text, dataModel, newInt, 10
+    );
+    if (!processingSuccessful) return;
+
+    dataModel->setData(newInt, E_FieldTypes::DEC);
+    dataModel->setUpdateSuccessfully(true);
+}
+
+
+CPP_LOCAL_FUN void
+dataChangedUnsignedDec(
+        QLineEdit *editField,
+        DataModel *dataModel
+) {
+    if (dataModel->getUpdatingFieldType() == E_FieldTypes::DEC) {
+        return;
+    }
+
+    if (!dataModel->isUpdateSuccessful()) {
+        editField->setText("Invalid");
+        return;
+    }
+
+    QString displayString = "";
+
+    if (!dataModel->isNumberEmpty()) {
+        Number number = dataModel->getData();
+        E_WordSizes wordSize = dataModel->getWordSize();
+
+        std::string temp;
+        switch (wordSize) {
+            case E_WordSizes::U8: temp = std::to_string(number.u8); break;
+            case E_WordSizes::U16: temp = std::to_string(number.u16); break;
+            case E_WordSizes::U32: temp = std::to_string(number.u32); break;
+            case E_WordSizes::U64: temp = std::to_string(number.u64); break;
+        }
+
+        displayString = QString::fromStdString(temp);
+    }
+
+    editField->setText(displayString);
+}
+
+
+GenericEditField *
+EditFields::makeUnsignedDecEditor(
+        QWidget *parent,
+        DataModel *dataModel
+) {
+    auto editField = new GenericEditField(parent, dataModel);
+
+    editField->setTextChangedFunction(&unsignedDecTextChanged);
+    editField->setDataChangedFunction(&dataChangedUnsignedDec);
 
     return editField;
 }
@@ -201,20 +364,11 @@ dataChangedHex(
         return;
     }
 
-    
     QString displayString = "";
-    QString sign = "";
 
     if (!dataModel->isNumberEmpty()) {
         Number newNumber = dataModel->getData();
         E_WordSizes wordSize = dataModel->getWordSize();
-
-        switch (wordSize) {
-            case E_WordSizes::I64: if (newNumber.i64 < 0) sign = "-"; break;
-            case E_WordSizes::I32: if (newNumber.i32 < 0) sign = "-"; break;
-            case E_WordSizes::I16: if (newNumber.i16 < 0) sign = "-"; break;
-            default: break;
-        }
 
         switch (wordSize) {
             case E_WordSizes::U8: displayString = QString::number(newNumber.u8, 16); break;
@@ -255,7 +409,7 @@ binTextChanged(
     std::cout << "Bin string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntoInt(
+    bool processingSuccessful = dataChangedIntoSignedInt(
             text, dataModel, newInt, 2
     );
     if (!processingSuccessful) return;

@@ -18,7 +18,9 @@ private:
 
     QWidget *_mainPanel;
 
-    GenericEditField *_decEdit;
+    GenericEditField *_sDecEdit;
+
+    GenericEditField *_uDecEdit;
 
     GenericEditField *_hexEdit;
 
@@ -26,17 +28,14 @@ private:
 
     GenericEditField *_floatEdit;
 
-    GenericEditField *_doubleEdit;
-
     BitButtons *_bitButtons;
 
 
 public:
-    explicit NumRepWindow() : _mainPanel{nullptr}, _decEdit{nullptr},
-                              _hexEdit{nullptr}, _binEdit{nullptr},
-                              _floatEdit{nullptr}, _doubleEdit{nullptr},
-                              _bitButtons{nullptr} {
-        _dataModel = new DataModel();
+    explicit NumRepWindow() :
+            _mainPanel{nullptr}, _sDecEdit{nullptr}, _uDecEdit{nullptr},
+            _hexEdit{nullptr}, _binEdit{nullptr}, _floatEdit{nullptr},
+            _bitButtons{nullptr} {
     }
 
     ~NumRepWindow() override {

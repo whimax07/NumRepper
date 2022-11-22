@@ -12,7 +12,12 @@
 class EditFields {
 
 public:
-    static GenericEditField * makeDecEditor(
+    static GenericEditField * makeSignedDecEditor(
+            QWidget *parent,
+            DataModel *dataModel
+    );
+
+    static GenericEditField * makeUnsignedDecEditor(
             QWidget *parent,
             DataModel *dataModel
     );
