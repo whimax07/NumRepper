@@ -10,6 +10,7 @@
 
 
 
+#define CPP_LOCAL_FUN static
 
 
 // =============================================================================
@@ -101,8 +102,8 @@ dataChangedIntoSignedInt(
 // =============================================================================
 // ===== Dec ===================================================================
 
-void
-decTextChanged(
+CPP_LOCAL_FUN void
+signedDecTextChanged(
         const QString &text,
         DataModel *dataModel
 ) {
@@ -119,8 +120,8 @@ decTextChanged(
 }
 
 
-void
-dataChangedDec(
+CPP_LOCAL_FUN void
+dataChangedSignedDec(
         QLineEdit *editField,
         DataModel *dataModel
 ) {
@@ -168,7 +169,7 @@ EditFields::makeDecEditor(
 // =============================================================================
 // ===== Hex ===================================================================
 
-void
+CPP_LOCAL_FUN void
 hexTextChanged(
         const QString &text,
         DataModel *dataModel
@@ -176,7 +177,7 @@ hexTextChanged(
     std::cout << "Hex string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntoInt(
+    bool processingSuccessful = dataChangedIntoUnsignedInt(
             text, dataModel, newInt, 16
     );
     if (!processingSuccessful) return;
@@ -186,7 +187,7 @@ hexTextChanged(
 }
 
 
-void
+CPP_LOCAL_FUN void
 dataChangedHex(
         QLineEdit *editField,
         DataModel *dataModel
@@ -246,7 +247,7 @@ EditFields::makeHexEditor(
 // =============================================================================
 // ===== Bin ===================================================================
 
-void
+CPP_LOCAL_FUN void
 binTextChanged(
         const QString &text,
         DataModel *dataModel
@@ -264,7 +265,7 @@ binTextChanged(
 }
 
 
-void
+CPP_LOCAL_FUN void
 dataChangedBin(
         QLineEdit *editField,
         DataModel *dataModel
@@ -315,7 +316,7 @@ EditFields::makeBinEditor(
 // =============================================================================
 // ===== Float =================================================================
 
-bool
+CPP_LOCAL_FUN bool
 floatChangedIntro(
         const std::string& textStd,
         DataModel *dataModel,
@@ -358,7 +359,7 @@ floatChangedIntro(
 }
 
 
-void
+CPP_LOCAL_FUN void
 floatTextChanged(
         const QString &text,
         DataModel *dataModel
@@ -374,7 +375,7 @@ floatTextChanged(
 }
 
 
-void
+CPP_LOCAL_FUN void
 dataChangedFloat(
         QLineEdit *editField,
         DataModel *dataModel
