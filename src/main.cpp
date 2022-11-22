@@ -15,5 +15,5 @@ int main(int argc, char **argv) {
     numRepWindow->buildGui(&window);
 
     window.show();
-    return app.exec();
+    return QApplication::exec();
 }
