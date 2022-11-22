@@ -14,7 +14,7 @@
 class NumRepWindow : public QWidget {
 
 private:
-    DataModel *_dataModel;
+    DataModel *_dataModel = new DataModel();
 
     QWidget *_mainPanel;
 
