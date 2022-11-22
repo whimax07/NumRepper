@@ -46,7 +46,11 @@ private:
 
     E_FieldTypes updatingField_;
 
+    // TODO(Max): Deprecate this in favour of `updateState_` to allow for more
+    //  GUI features.
     bool successfulUpdate_;
+
+    E_DataUpdateErrors updateState_;
 
     E_WordSizes wordSize_;
 
@@ -91,6 +95,10 @@ public:
 
     // =========================================================================
     // ===== Data updated successfully. ========================================
+    /**
+     * IMPORTANT: This function can  call `emit generalDataUpdated();`. Be
+     * carefully with ordering.
+     */
     void setUpdateSuccessfully(bool success) {
         if (success || successfulUpdate_ != success) {
             successfulUpdate_ = success;
@@ -103,6 +111,13 @@ public:
     [[nodiscard]]
     bool isUpdateSuccessful() const {
         return successfulUpdate_;
+    }
+
+
+    // =========================================================================
+    // ===== Data update failure. ==============================================
+    void setUpdateState(E_FieldTypes source, E_DataUpdateErrors error) {
+        updatingField_ = source;
     }
 
 

@@ -12,17 +12,7 @@
 
 #define CPP_LOCAL_FUN static
 
-#define RETURN_IF_TO_LARGE(value, max_value, dataModel) \
-    if ((value) > (max_value)) { \
-        (dataModel)->setUpdateSuccessfully(false); \
-        return false; \
-    }
 
-#define RETURN_IF_TO_SMALL(value, min_value, dataModel) \
-    if ((value) < (min_value)) { \
-        (dataModel)->setUpdateSuccessfully(false); \
-        return false; \
-    }
 
 // =============================================================================
 // ===== Utils =================================================================
@@ -59,8 +49,7 @@ CPP_LOCAL_FUN bool
 dataChangedIntoSignedInt(
         const QString &text,
         DataModel *dataModel,
-        Number &data,
-        int base
+        Number &data
 ) {
     auto textStd = text.toStdString();
     std::size_t pos = 0;
@@ -71,18 +60,9 @@ dataChangedIntoSignedInt(
         return true;
     }
 
-    // Remove any prefixes.
-    if (base == 2) {
-        textStd = repper::Utils::removeFormatPrefix(textStd, 2);
-    }
-    if (base == 16) {
-        textStd = repper::Utils::removeFormatPrefix(textStd, 16);
-    }
-
-
-    long long parsedValue = 0;
+    long long parsedNumber = 0;
     try {
-        parsedValue = std::stoll(textStd, &pos, base);
+        parsedNumber = std::stoll(textStd, &pos, 10);
     }
     catch(std::invalid_argument const& ex) {
         invalidArgumentError(ex, dataModel);
@@ -95,22 +75,22 @@ dataChangedIntoSignedInt(
 
     switch (dataModel->getWordSize()) {
         case E_WordSizes::U8:
-            RETURN_IF_TO_LARGE(parsedValue, INT8_MAX, dataModel);
-            RETURN_IF_TO_SMALL(parsedValue, INT8_MIN, dataModel);
-            data.i8 = static_cast<int8_t>(parsedValue);
+            if (parsedNumber > INT8_MAX) return false;
+            if (parsedNumber < INT8_MIN) return false;
+            data.i8 = static_cast<int8_t>(parsedNumber);
             break;
         case E_WordSizes::U16:
-            RETURN_IF_TO_LARGE(parsedValue, INT16_MAX, dataModel);
-            RETURN_IF_TO_SMALL(parsedValue, INT16_MIN, dataModel);
-            data.i16 = static_cast<int16_t>(parsedValue);
+            if (parsedNumber > INT16_MAX) return false;
+            if (parsedNumber < INT16_MIN) return false;
+            data.i16 = static_cast<int16_t>(parsedNumber);
             break;
         case E_WordSizes::U32:
-            RETURN_IF_TO_LARGE(parsedValue, INT32_MAX, dataModel);
-            RETURN_IF_TO_SMALL(parsedValue, INT32_MIN, dataModel);
-            data.i32 = static_cast<int32_t>(parsedValue);
+            if (parsedNumber > INT32_MAX) return false;
+            if (parsedNumber < INT32_MIN) return false;
+            data.i32 = static_cast<int32_t>(parsedNumber);
             break;
         case E_WordSizes::U64:
-            data.i64 = parsedValue;
+            data.i64 = parsedNumber;
             break;
     }
 
@@ -167,15 +147,15 @@ dataChangedIntoUnsignedInt(
 
     switch (dataModel->getWordSize()) {
         case E_WordSizes::U8:
-            RETURN_IF_TO_LARGE(parsedNumber, UINT8_MAX, dataModel)
+            if (parsedNumber > UINT8_MAX) return false;
             data.u8 = static_cast<uint8_t>(parsedNumber);
             break;
         case E_WordSizes::U16:
-            RETURN_IF_TO_LARGE(parsedNumber, UINT16_MAX, dataModel)
+            if (parsedNumber > UINT16_MAX) return false;
             data.u16 = static_cast<uint16_t>(parsedNumber);
             break;
         case E_WordSizes::U32:
-            RETURN_IF_TO_LARGE(parsedNumber, UINT32_MAX, dataModel)
+            if (parsedNumber > UINT32_MAX) return false;
             data.u32 = static_cast<uint32_t>(parsedNumber);
             break;
         case E_WordSizes::U64:
@@ -200,16 +180,22 @@ signedDecTextChanged(
         const QString &text,
         DataModel *dataModel
 ) {
-    std::cout << "Dec string changed: " << text.toStdString() << std::endl;
+    std::cout << "Dec, signed, string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
     bool processingSuccessful = dataChangedIntoSignedInt(
-            text, dataModel, newInt, 10
+            text, dataModel, newInt
     );
-    if (!processingSuccessful) return;
 
-    dataModel->setData(newInt, E_FieldTypes::DEC);
-    dataModel->setUpdateSuccessfully(true);
+    if (processingSuccessful) {
+        dataModel->setData(newInt, E_FieldTypes::DEC_SIGNED);
+    } else {
+        dataModel->setUpdateState(
+                E_FieldTypes::DEC_SIGNED, E_DataUpdateErrors::Generic
+        );
+    }
+
+    dataModel->setUpdateSuccessfully(processingSuccessful);
 }
 
 
@@ -218,7 +204,7 @@ dataChangedSignedDec(
         QLineEdit *editField,
         DataModel *dataModel
 ) {
-    if (dataModel->getUpdatingFieldType() == E_FieldTypes::DEC) {
+    if (dataModel->getUpdatingFieldType() == E_FieldTypes::DEC_SIGNED) {
         return;
     }
 
@@ -234,7 +220,7 @@ dataChangedSignedDec(
         E_WordSizes wordSize = dataModel->getWordSize();
 
         switch (wordSize) {
-            case E_WordSizes::U8: displayString = QString::number(number.u8, 10); break;
+            case E_WordSizes::U8: displayString = QString::number(number.i8, 10); break;
             case E_WordSizes::U16: displayString = QString::number(number.i16, 10); break;
             case E_WordSizes::U32: displayString = QString::number(number.i32, 10); break;
             case E_WordSizes::U64: displayString = QString::number(number.i64, 10); break;
@@ -267,16 +253,22 @@ unsignedDecTextChanged(
         const QString &text,
         DataModel *dataModel
 ) {
-    std::cout << "Dec string changed: " << text.toStdString() << std::endl;
+    std::cout << "Dec, unsigned, string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
     bool processingSuccessful = dataChangedIntoUnsignedInt(
             text, dataModel, newInt, 10
     );
-    if (!processingSuccessful) return;
 
-    dataModel->setData(newInt, E_FieldTypes::DEC);
-    dataModel->setUpdateSuccessfully(true);
+    if (processingSuccessful) {
+        dataModel->setData(newInt, E_FieldTypes::DEC_UNSIGNED);
+    } else {
+        dataModel->setUpdateState(
+                E_FieldTypes::DEC_UNSIGNED, E_DataUpdateErrors::Generic
+        );
+    }
+
+    dataModel->setUpdateSuccessfully(processingSuccessful);
 }
 
 
@@ -285,7 +277,7 @@ dataChangedUnsignedDec(
         QLineEdit *editField,
         DataModel *dataModel
 ) {
-    if (dataModel->getUpdatingFieldType() == E_FieldTypes::DEC) {
+    if (dataModel->getUpdatingFieldType() == E_FieldTypes::DEC_UNSIGNED) {
         return;
     }
 
@@ -343,10 +335,16 @@ hexTextChanged(
     bool processingSuccessful = dataChangedIntoUnsignedInt(
             text, dataModel, newInt, 16
     );
-    if (!processingSuccessful) return;
 
-    dataModel->setData(newInt, E_FieldTypes::HEX);
-    dataModel->setUpdateSuccessfully(true);
+    if (processingSuccessful) {
+        dataModel->setData(newInt, E_FieldTypes::HEX);
+    } else {
+        dataModel->setUpdateState(
+                E_FieldTypes::HEX, E_DataUpdateErrors::Generic
+        );
+    }
+
+    dataModel->setUpdateSuccessfully(processingSuccessful);
 }
 
 
@@ -409,13 +407,19 @@ binTextChanged(
     std::cout << "Bin string changed: " << text.toStdString() << std::endl;
 
     Number newInt;
-    bool processingSuccessful = dataChangedIntoSignedInt(
+    bool processingSuccessful = dataChangedIntoUnsignedInt(
             text, dataModel, newInt, 2
     );
-    if (!processingSuccessful) return;
 
-    dataModel->setData(newInt, E_FieldTypes::BIN);
-    dataModel->setUpdateSuccessfully(true);
+    if (processingSuccessful) {
+        dataModel->setData(newInt, E_FieldTypes::BIN);
+    } else {
+        dataModel->setUpdateState(
+                E_FieldTypes::BIN, E_DataUpdateErrors::Generic
+        );
+    }
+
+    dataModel->setUpdateSuccessfully(processingSuccessful);
 }
 
 
@@ -522,10 +526,16 @@ floatTextChanged(
     Number newFloat = Number();
 
     bool goodParse = floatChangedIntro(textStd, dataModel, &newFloat);
-    if (!goodParse) return;
 
-    dataModel->setData(newFloat, E_FieldTypes::FLOAT);
-    dataModel->setUpdateSuccessfully(true);
+    if (goodParse) {
+        dataModel->setData(newFloat, E_FieldTypes::FLOAT);
+    } else {
+        dataModel->setUpdateState(
+                E_FieldTypes::FLOAT, E_DataUpdateErrors::Generic
+        );
+    }
+
+    dataModel->setUpdateSuccessfully(goodParse);
 }
 
 
