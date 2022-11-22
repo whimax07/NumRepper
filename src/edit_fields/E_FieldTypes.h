@@ -8,7 +8,8 @@
 
 enum class E_FieldTypes {
     NONE,
-    DEC,
+    DEC_SIGNED,
+    DEC_UNSIGNED,
     HEX,
     BIN,
     FLOAT,
