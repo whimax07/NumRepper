@@ -7,9 +7,9 @@
 
 
 enum class E_WordSizes {
-    I64,
-    I32,
-    I16,
+    U64,
+    U32,
+    U16,
     U8
 };
 

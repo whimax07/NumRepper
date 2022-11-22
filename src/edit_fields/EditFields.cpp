@@ -123,9 +123,9 @@ dataChangedDec(
 
         switch (wordSize) {
             case E_WordSizes::U8: displayString = QString::number(number.u8, 10); break;
-            case E_WordSizes::I16: displayString = QString::number(number.i16, 10); break;
-            case E_WordSizes::I32: displayString = QString::number(number.i32, 10); break;
-            case E_WordSizes::I64: displayString = QString::number(number.i64, 10); break;
+            case E_WordSizes::U16: displayString = QString::number(number.i16, 10); break;
+            case E_WordSizes::U32: displayString = QString::number(number.i32, 10); break;
+            case E_WordSizes::U64: displayString = QString::number(number.i64, 10); break;
         }
     }
     
@@ -199,9 +199,9 @@ dataChangedHex(
 
         switch (wordSize) {
             case E_WordSizes::U8: displayString = QString::number(newNumber.u8, 16); break;
-            case E_WordSizes::I16: displayString = QString::number(newNumber.i16, 16); break;
-            case E_WordSizes::I32: displayString = QString::number(newNumber.i32, 16); break;
-            case E_WordSizes::I64: displayString = QString::number(newNumber.i64, 16); break;
+            case E_WordSizes::U16: displayString = QString::number(newNumber.u16, 16); break;
+            case E_WordSizes::U32: displayString = QString::number(newNumber.u32, 16); break;
+            case E_WordSizes::U64: displayString = QString::number(newNumber.u64, 16); break;
         }
 
         displayString = "0x" + displayString;
@@ -268,9 +268,9 @@ dataChangedBin(
 
         switch (wordSize) {
             case E_WordSizes::U8: displayString = QString::number(newNumber.u8, 2); break;
-            case E_WordSizes::I16: displayString = QString::number(newNumber.u16, 2); break;
-            case E_WordSizes::I32: displayString = QString::number(newNumber.u32, 2); break;
-            case E_WordSizes::I64: displayString = QString::number(newNumber.u64, 2); break;
+            case E_WordSizes::U16: displayString = QString::number(newNumber.u16, 2); break;
+            case E_WordSizes::U32: displayString = QString::number(newNumber.u32, 2); break;
+            case E_WordSizes::U64: displayString = QString::number(newNumber.u64, 2); break;
         }
 
         displayString = "0b" + displayString;
@@ -315,8 +315,8 @@ floatChangedIntro(
     try {
         E_WordSizes wordSize = dataModel->getWordSize();
         switch (wordSize) {
-            case E_WordSizes::I64: data->f64 = std::stod(textStd, &pos); break;
-            case E_WordSizes::I32: data->f32 = std::stof(textStd, &pos); break;
+            case E_WordSizes::U64: data->f64 = std::stod(textStd, &pos); break;
+            case E_WordSizes::U32: data->f32 = std::stof(textStd, &pos); break;
             default: throw std::runtime_error(
                     "Can't use float unless in 32 or 64 bit mode."
             );
@@ -380,17 +380,17 @@ dataChangedFloat(
             editField->setText("Not Implemented For 8 Bits.");
             editField->setDisabled(true);
             break;
-        case E_WordSizes::I16:
+        case E_WordSizes::U16:
             editField->setText("Not Implemented For 16 Bits.");
             editField->setDisabled(true);
             break;
-        case E_WordSizes::I32:
+        case E_WordSizes::U32:
             qString = (dataModel->isNumberEmpty())
                       ? "" : QString::number(data.f32);
             editField->setText(qString);
             editField->setDisabled(false);
             break;
-        case E_WordSizes::I64:
+        case E_WordSizes::U64:
             qString = (dataModel->isNumberEmpty())
                       ? "" : QString::number(data.f64);
             editField->setText(qString);

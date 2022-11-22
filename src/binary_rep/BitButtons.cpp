@@ -94,9 +94,9 @@ BitButtons::dataModelUpdated() {
     Number data = dataModel_->getData();
     for (auto & button : buttons_) {
         switch (dataModel_->getWordSize()) {
-            case E_WordSizes::I64: setBits(button, data.u64); break;
-            case E_WordSizes::I32: setBits(button, data.u32); break;
-            case E_WordSizes::I16: setBits(button, data.u16); break;
+            case E_WordSizes::U64: setBits(button, data.u64); break;
+            case E_WordSizes::U32: setBits(button, data.u32); break;
+            case E_WordSizes::U16: setBits(button, data.u16); break;
             case E_WordSizes::U8: setBits(button, data.u8); break;
         }
     }

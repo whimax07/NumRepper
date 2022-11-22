@@ -55,7 +55,7 @@ public:
                   isEmptyNumber_(true),
                   updatingField_(E_FieldTypes::NONE),
                   successfulUpdate_{false},
-                  wordSize_{E_WordSizes::I32} {  };
+                  wordSize_{E_WordSizes::U32} {  };
 
 
 public:
@@ -121,9 +121,9 @@ public:
         int numBytes = 0;
         switch (wordSize) {
             case E_WordSizes::U8: numBytes = 1; break;
-            case E_WordSizes::I16: numBytes = 2; break;
-            case E_WordSizes::I32: numBytes = 4; break;
-            case E_WordSizes::I64: numBytes = 8; break;
+            case E_WordSizes::U16: numBytes = 2; break;
+            case E_WordSizes::U32: numBytes = 4; break;
+            case E_WordSizes::U64: numBytes = 8; break;
         }
         uint64_t base = -1;
         int bitsToShift = 8 * (8 - numBytes);
