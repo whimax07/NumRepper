@@ -25,7 +25,6 @@ CPP_LOCAL_FUN void invalidArgumentError(
               << std::endl
               << error.what()
               << std::endl;
-    dataModel->setUpdateSuccessfully(false);
 }
 
 
@@ -37,7 +36,6 @@ CPP_LOCAL_FUN void outOfRangeError(
               << std::endl
               << error.what()
               << std::endl;
-    dataModel->setUpdateSuccessfully(false);
 }
 
 
@@ -94,12 +92,7 @@ dataChangedIntoSignedInt(
             break;
     }
 
-    if (pos != textStd.length()) {
-        dataModel->setUpdateSuccessfully(false);
-        return false;
-    }
-
-    return true;
+    return pos == textStd.length();
 }
 
 
@@ -163,12 +156,7 @@ dataChangedIntoUnsignedInt(
             break;
     }
 
-    if (pos != textStd.length()) {
-        dataModel->setUpdateSuccessfully(false);
-        return false;
-    }
-
-    return true;
+    return pos == textStd.length();
 }
 
 
@@ -292,15 +280,22 @@ dataChangedUnsignedDec(
         Number number = dataModel->getData();
         E_WordSizes wordSize = dataModel->getWordSize();
 
-        std::string temp;
-        switch (wordSize) {
-            case E_WordSizes::U8: temp = std::to_string(number.u8); break;
-            case E_WordSizes::U16: temp = std::to_string(number.u16); break;
-            case E_WordSizes::U32: temp = std::to_string(number.u32); break;
-            case E_WordSizes::U64: temp = std::to_string(number.u64); break;
-        }
+//        std::string temp;
+//        switch (wordSize) {
+//            case E_WordSizes::U8: temp = std::to_string(number.u8); break;
+//            case E_WordSizes::U16: temp = std::to_string(number.u16); break;
+//            case E_WordSizes::U32: temp = std::to_string(number.u32); break;
+//            case E_WordSizes::U64: temp = std::to_string(number.u64); break;
+//        }
+//
+//        displayString = QString::fromStdString(temp);
 
-        displayString = QString::fromStdString(temp);
+        switch (wordSize) {
+            case E_WordSizes::U8: displayString = QString::number(number.u8); break;
+            case E_WordSizes::U16: displayString = QString::number(number.u16); break;
+            case E_WordSizes::U32: displayString = QString::number(number.u32); break;
+            case E_WordSizes::U64: displayString = QString::number(number.u64); break;
+        }
     }
 
     editField->setText(displayString);
@@ -508,12 +503,7 @@ floatChangedIntro(
         return false;
     }
 
-    if (pos != textStd.length()) {
-        dataModel->setUpdateSuccessfully(false);
-        return false;
-    }
-
-    return true;
+    return pos == textStd.length();
 }
 
 

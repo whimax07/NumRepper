@@ -68,8 +68,7 @@ BitButtons::bitChanged(
         data.u64 = data.u64 & ~(one << bitNumber);
     }
 
-    std::cout << "Bin button " << bitNumber << " changed: "
-              << data.u64
+    std::cout << "Bin button " << bitNumber << " changed: " << data.u64
               << std::endl;
 
     dataModel_->setNumberEmpty(data.u64 == 0);
@@ -94,10 +93,10 @@ BitButtons::dataModelUpdated() {
     Number data = dataModel_->getData();
     for (auto & button : buttons_) {
         switch (dataModel_->getWordSize()) {
-            case E_WordSizes::U64: setBits(button, data.u64); break;
-            case E_WordSizes::U32: setBits(button, data.u32); break;
-            case E_WordSizes::U16: setBits(button, data.u16); break;
             case E_WordSizes::U8: setBits(button, data.u8); break;
+            case E_WordSizes::U16: setBits(button, data.u16); break;
+            case E_WordSizes::U32: setBits(button, data.u32); break;
+            case E_WordSizes::U64: setBits(button, data.u64); break;
         }
     }
 }
