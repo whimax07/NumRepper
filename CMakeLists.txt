@@ -36,11 +36,14 @@ enable_testing()
 
 
 # ==============================================================================
-# ===== Parse tests. ===========================================================
-# This should ask the CMakeList.txt in the lib dir to compile its contents.
-add_subdirectory(src/parse)
+# ===== My src imports. ========================================================
+add_subdirectory(src)
+# ----- End of my src import section. ------------------------------------------
 
-# This builds the tests.
+
+
+# ==============================================================================
+# ===== Parse tests. ===========================================================
 add_executable(RepParseTests
         tests/BasicTokenizerTests.cpp
         tests/AstCreationTests.cpp
@@ -59,7 +62,6 @@ target_link_libraries(
 # populated... or what it would be.
 target_include_directories(RepParseTests PUBLIC
         "${PROJECT_BINARY_DIR}"
-        "${PROJECT_SOURCE_DIR}/src/parse"
         )
 # ----- End of parse tests section. --------------------------------------------
 
@@ -67,16 +69,15 @@ target_include_directories(RepParseTests PUBLIC
 
 # ==============================================================================
 # ===== GUI executable. ========================================================
-add_executable(NumRep
-        src/gui/main.cpp
-        src/gui/NumRepWindow.cpp
-        src/gui/data_model/DataModel.h src/gui/edit_fields/E_FieldTypes.h src/gui/edit_fields/GenericEditField.h src/gui/edit_fields/EditFields.cpp src/gui/edit_fields/EditFields.h src/gui/binary_rep/BitButtons.h src/gui/binary_rep/BitButtons.cpp src/gui/word_size/WordSizeSelection.h src/gui/word_size/E_WordSizes.h src/gui/word_size/WordSizeRadioButton.h src/gui/utils/Utils.cpp src/gui/utils/Utils.h src/gui/edit_fields/E_DataUpdateErrors.h
+add_executable(NumRep)
+
+target_link_libraries(NumRep
+        PRIVATE Qt5::Widgets
+        PRIVATE NumRepCommon
+        PRIVATE NumRepGUI
         )
-
-
-
-target_link_libraries(NumRep PRIVATE Qt5::Widgets RepParseLib)
 # ----- End of GUI executable section. -----------------------------------------
+
 
 
 # ==============================================================================

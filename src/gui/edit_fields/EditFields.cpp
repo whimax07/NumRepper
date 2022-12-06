@@ -5,10 +5,6 @@
 #include <sstream>
 
 #include "EditFields.h"
-#include "../utils/Utils.h"
-#include "E_DataUpdateErrors.h"
-#include "NumberStructs.h"
-
 
 #define CPP_LOCAL_FUN static
 

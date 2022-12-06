@@ -9,7 +9,7 @@
 #include <QWidget>
 #include <QRadioButton>
 #include <QHBoxLayout>
-#include "../data_model/DataModel.h"
+#include "data_model/DataModel.h"
 #include "WordSizeRadioButton.h"
 
 

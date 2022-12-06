@@ -13,10 +13,10 @@
 
 #include <QtCore>
 
-#include "../edit_fields/E_FieldTypes.h"
-#include "../word_size/E_WordSizes.h"
-#include "../edit_fields/E_DataUpdateErrors.h"
-#include "../../common/NumberStructs.h"
+#include "edit_fields/E_FieldTypes.h"
+#include "edit_fields/E_DataUpdateErrors.h"
+#include "word_size/E_WordSizes.h"
+#include "common/NumberStructs.h"
 
 
 class DataModel : public QObject {

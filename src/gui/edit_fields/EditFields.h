@@ -6,8 +6,12 @@
 #define NUMREPRESENTATION_EDITFIELDS_H
 
 
+#include "common/NumberStructs.h"
+#include "data_model/DataModel.h"
+#include "utils/Utils.h"
+
 #include "GenericEditField.h"
-#include "../data_model/DataModel.h"
+#include "E_DataUpdateErrors.h"
 
 
 class EditFields {

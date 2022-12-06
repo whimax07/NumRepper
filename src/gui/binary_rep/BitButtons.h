@@ -9,7 +9,7 @@
 #include <QPushButton>
 #include <QGridLayout>
 
-#include "../data_model/DataModel.h"
+#include "data_model/DataModel.h"
 
 
 

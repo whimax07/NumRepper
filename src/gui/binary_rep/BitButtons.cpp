@@ -3,7 +3,6 @@
 //
 
 #include "BitButtons.h"
-#include "NumberStructs.h"
 
 
 // We want the buttons to be down when the bit is low.
