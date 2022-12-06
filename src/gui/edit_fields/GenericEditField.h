@@ -8,7 +8,7 @@
 
 #include <QLineEdit>
 
-#include "data_model/DataModel.h"
+#include "gui/data_model/DataModel.h"
 
 
 using TextChangedFunction = void (*)(

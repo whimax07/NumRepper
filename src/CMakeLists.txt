@@ -49,7 +49,6 @@ target_link_libraries(NumRepGUI
 target_include_directories(NumRepGUI
         # Adding GUI makes relative paths from this address available to
         # `#include`.
-        PRIVATE gui
         PRIVATE .
         )
 # ----- End of GUI executable section. -----------------------------------------

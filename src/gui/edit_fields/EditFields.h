@@ -7,8 +7,8 @@
 
 
 #include "common/NumberStructs.h"
-#include "data_model/DataModel.h"
-#include "utils/Utils.h"
+#include "gui/data_model/DataModel.h"
+#include "gui/utils/Utils.h"
 
 #include "GenericEditField.h"
 #include "E_DataUpdateErrors.h"
