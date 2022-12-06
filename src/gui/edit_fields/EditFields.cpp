@@ -47,14 +47,14 @@ CPP_LOCAL_FUN bool
 dataChangedIntoSignedInt(
         const QString &text,
         DataModel *dataModel,
-        Number &data
+        repper::Number &data
 ) {
     auto textStd = text.toStdString();
     std::size_t pos = 0;
 
     if (textStd.length() == 0) {
         dataModel->setNumberEmpty(true);
-        data = Number();
+        data = repper::Number();
         return true;
     }
 
@@ -104,7 +104,7 @@ CPP_LOCAL_FUN bool
 dataChangedIntoUnsignedInt(
         const QString &text,
         DataModel *dataModel,
-        Number &data,
+        repper::Number &data,
         int base
 ) {
     auto textStd = text.toStdString();
@@ -112,7 +112,7 @@ dataChangedIntoUnsignedInt(
 
     if (textStd.length() == 0) {
         dataModel->setNumberEmpty(true);
-        data = Number();
+        data = repper::Number();
         return true;
     }
 
@@ -170,7 +170,7 @@ signedDecTextChanged(
 ) {
     std::cout << "Dec, signed, string changed: " << text.toStdString() << std::endl;
 
-    Number newInt;
+    repper::Number newInt;
     bool processingSuccessful = dataChangedIntoSignedInt(
             text, dataModel, newInt
     );
@@ -204,8 +204,8 @@ dataChangedSignedDec(
     QString displayString = "";
 
     if (!dataModel->isNumberEmpty()) {
-        Number number = dataModel->getData();
-        E_WordSizes wordSize = dataModel->getWordSize();
+        auto number = dataModel->getData();
+        auto wordSize = dataModel->getWordSize();
 
         switch (wordSize) {
             case E_WordSizes::U8: displayString = QString::number(number.i8, 10); break;
@@ -243,7 +243,7 @@ unsignedDecTextChanged(
 ) {
     std::cout << "Dec, unsigned, string changed: " << text.toStdString() << std::endl;
 
-    Number newInt;
+    auto newInt = repper::Number();
     bool processingSuccessful = dataChangedIntoUnsignedInt(
             text, dataModel, newInt, 10
     );
@@ -277,8 +277,8 @@ dataChangedUnsignedDec(
     QString displayString = "";
 
     if (!dataModel->isNumberEmpty()) {
-        Number number = dataModel->getData();
-        E_WordSizes wordSize = dataModel->getWordSize();
+        auto number = dataModel->getData();
+        auto wordSize = dataModel->getWordSize();
 
 //        std::string temp;
 //        switch (wordSize) {
@@ -326,7 +326,7 @@ hexTextChanged(
 ) {
     std::cout << "Hex string changed: " << text.toStdString() << std::endl;
 
-    Number newInt;
+    auto newInt = repper::Number();
     bool processingSuccessful = dataChangedIntoUnsignedInt(
             text, dataModel, newInt, 16
     );
@@ -360,8 +360,8 @@ dataChangedHex(
     QString displayString = "";
 
     if (!dataModel->isNumberEmpty()) {
-        Number newNumber = dataModel->getData();
-        E_WordSizes wordSize = dataModel->getWordSize();
+        auto newNumber = dataModel->getData();
+        auto wordSize = dataModel->getWordSize();
 
         switch (wordSize) {
             case E_WordSizes::U8: displayString = QString::number(newNumber.u8, 16); break;
@@ -401,7 +401,7 @@ binTextChanged(
 ) {
     std::cout << "Bin string changed: " << text.toStdString() << std::endl;
 
-    Number newInt;
+    auto newInt = repper::Number();
     bool processingSuccessful = dataChangedIntoUnsignedInt(
             text, dataModel, newInt, 2
     );
@@ -435,8 +435,8 @@ dataChangedBin(
     QString displayString = "";
 
     if (!dataModel->isNumberEmpty()) {
-        Number newNumber = dataModel->getData();
-        E_WordSizes wordSize = dataModel->getWordSize();
+        auto newNumber = dataModel->getData();
+        auto wordSize = dataModel->getWordSize();
 
         switch (wordSize) {
             case E_WordSizes::U8: displayString = QString::number(newNumber.u8, 2); break;
@@ -473,13 +473,13 @@ CPP_LOCAL_FUN bool
 floatChangedIntro(
         const std::string& textStd,
         DataModel *dataModel,
-        Number *data
+        repper::Number *data
 ) {
     std::cout << "Float string changed: " << textStd << std::endl;
 
     if (textStd.length() == 0) {
         dataModel->setNumberEmpty(true);
-        *data = Number();
+        *data = repper::Number();
         return true;
     }
 
@@ -513,7 +513,7 @@ floatTextChanged(
         DataModel *dataModel
 ) {
     const auto textStd = text.toStdString();
-    Number newFloat = Number();
+    auto newFloat = repper::Number();
 
     bool goodParse = floatChangedIntro(textStd, dataModel, &newFloat);
 
@@ -544,8 +544,8 @@ dataChangedFloat(
     }
 
 
-    Number data = dataModel->getData();
-    E_WordSizes size = dataModel->getWordSize();
+    auto data = dataModel->getData();
+    auto size = dataModel->getWordSize();
     QString qString;
 
     switch (size) {

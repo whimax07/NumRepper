@@ -61,7 +61,7 @@ BitButtons::bitChanged(
         bool state,
         int bitNumber
 ) {
-    Number data = dataModel_->getData();
+    auto data = dataModel_->getData();
     uint64_t one = 1;
     if (state) {
         data.u64 = data.u64 | one << bitNumber;
@@ -91,7 +91,7 @@ BitButtons::dataModelUpdated() {
         return;
     }
 
-    Number data = dataModel_->getData();
+    auto data = dataModel_->getData();
     for (auto & button : buttons_) {
         switch (dataModel_->getWordSize()) {
             case E_WordSizes::U8: setBits(button, data.u8); break;

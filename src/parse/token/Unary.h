@@ -7,7 +7,7 @@
 
 
 #include "Operator.h"
-#include "NumberVariant.h"
+#include "NumberStructs.h"
 #include "../utils/Utils.h"
 
 

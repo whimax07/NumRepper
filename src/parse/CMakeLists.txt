@@ -1,3 +1,4 @@
+
 add_library(RepParseLib STATIC
         Tokenizer.h Tokenizer.cpp
         RepParse.h RepParse.cpp
@@ -12,5 +13,9 @@ add_library(RepParseLib STATIC
         token/Brackets.h
         token/Compare.h
         token/Symbols.h
-        utils/Utils.h
-        token/NumberVariant.h)
+        utils/Utils.h)
+
+target_include_directories(RepParseLib
+    PUBLIC "../common"
+)
+

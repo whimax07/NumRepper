@@ -16,14 +16,14 @@
 #include "../edit_fields/E_FieldTypes.h"
 #include "../word_size/E_WordSizes.h"
 #include "../edit_fields/E_DataUpdateErrors.h"
-#include "NumberStructs.h"
+#include "../../common/NumberStructs.h"
 
 
 class DataModel : public QObject {
 Q_OBJECT
 
 private:
-    Number data_;
+    repper::Number data_;
 
     bool isEmptyNumber_;
 
@@ -49,13 +49,13 @@ public:
 public:
     // =========================================================================
     // ===== Update the core number and attach the source. =====================
-    void setData(Number data, E_FieldTypes source) {
+    void setData(repper::Number data, E_FieldTypes source) {
         data_ = data;
         updatingField_ = source;
         std::cout << "New dataField_ value is: " << data.u64 << std::endl;
     }
 
-    Number getData() {
+    repper::Number getData() {
         return data_;
     }
 

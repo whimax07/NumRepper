@@ -10,7 +10,7 @@
 #include <bit>
 #include "Operator.h"
 #include "Token.h"
-#include "NumberVariant.h"
+#include "NumberStructs.h"
 #include "../utils/Utils.h"
 
 
